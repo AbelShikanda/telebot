@@ -19,8 +19,8 @@ jobs:
       - name: Generate Laravel application key
         run: php artisan key:generate
 
-      - name: Upload a Build Artifact
-        uses: actions/upload-artifact@v4.3.3
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v4.0.2
         
       # Runs a single command using the runners shell
       - name: Ls
