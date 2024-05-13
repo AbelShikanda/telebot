@@ -27,10 +27,13 @@ jobs:
       # Runs a single command using the runners shell
       - name: Ls
         run: ls -la
+
+        # Generate Laravel application key
+      - name: Generate Laravel application key
+        run: php artisan key:generate
         
       # Install composer
       - name: Install composer dependencies
-        run: php artisan key:generate
         run: composer install --no-scripts
 
       # PHPUnit tests
