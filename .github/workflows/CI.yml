@@ -18,7 +18,7 @@ jobs:
       - name: Ls
         run: ls -la    
     
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can have access to it
       - name: Git Clone
         uses: actions/checkout@v3
         with:
