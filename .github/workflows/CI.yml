@@ -30,9 +30,9 @@ jobs:
         
       # Install composer
       - name: Install composer dependencies
+        run: php artisan key:generate
         run: composer install --no-scripts
 
       # PHPUnit tests
       - name: PHPUnit tests
-        run: php artisan key:generate
         run: php artisan test
