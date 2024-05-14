@@ -33,7 +33,7 @@ jobs:
         run: php artisan test
 
       - name: executing remote ssh commands using password
-        uses: SamKirkland/FTP-Deploy-Action@4.3.2
+        uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.SSH_SITES_IP }}
           username: ${{ secrets.FTP_SITES_USER }}
