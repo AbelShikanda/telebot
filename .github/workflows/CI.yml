@@ -129,7 +129,7 @@ jobs:
           # in case of trouble recognizing the changes after the link find a solytion to refresh
           script: |
             printf "%s" "$LARAVEL_ENV" > "${BASE_PATH}/.env"
-            ln -s -n -f ${BASE_PATH/.env $RELEASE_PATH
+            ln -s -n -f ${BASE_PATH}/.env $RELEASE_PATH
             ln -s -n -f $STORAGE_PATH $RELEASE_PATH
             ln -s -n -f $RELEASE_PATH $ACTIVE_RELEASE_PATH
 # Run activate release
