@@ -76,6 +76,6 @@ jobs:
           port: ${{ secrets.SSH_SITES_PORT }}
           envs: GITHUB_SHA
           script: |
-            mkdir -p "/home/printsh1/print.printshopeld.com/release/${ GITHUB_SHA }"
-            tar xzf /home/printsh1/print.printshopeld.com/artifacts/${ GITHUB_SHA }.tar.gz -c "/home/printsh1/print.printshopeld.com/release/${ GITHUB_SHA }"
+            mkdir -p "/home/printsh1/print.printshopeld.com/release/${GITHUB_SHA}"
+            tar xzf /home/printsh1/print.printshopeld.com/artifacts/${GITHUB_SHA}.tar.gz -c "/home/printsh1/print.printshopeld.com/release/${GITHUB_SHA}"
             
