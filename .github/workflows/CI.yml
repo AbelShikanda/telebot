@@ -64,7 +64,7 @@ jobs:
           password: ${{ secrets.FTP_SITES_PASSWORD }}
           port: ${{ secrets.SSH_SITES_PORT }}
           source: ${{ github.sha}}.tar.gz
-          target: /home/printsh1/print.printshopeld.com/artifacts
+          target: /home/printsh1/print.printshopeld/artifacts
       - name: extract archive and create directory
         uses: appleboy/ssh-action@master
         env: 
@@ -76,13 +76,22 @@ jobs:
           port: ${{ secrets.SSH_SITES_PORT }}
           envs: GITHUB_SHA
           script: |
-            mkdir -p "/home/printsh1/print.printshopeld.com/release/${GITHUB_SHA}"
-            tar xzf /home/printsh1/print.printshopeld.com/artifacts/${GITHUB_SHA}.tar.gz -C "/home/printsh1/print.printshopeld.com/release/${GITHUB_SHA}"
-            rm -rf /home/printsh1/print.printshopeld.com/release/${GITHUB_SHA}/storage
-            mkdir -p /home/printsh1/print.printshopeld.com/storage/{app,public,framework,logs}
-            mkdir -p /home/printsh1/print.printshopeld.com/storage/framework/{cache,sessions,testing,views}
-            mkdir -p /home/printsh1/print.printshopeld.com/storage/framework/cache/data
-            chmod -R 0777 /home/printsh1/print.printshopeld.com/storage
+            mkdir -p "/home/printsh1/print.printshopeld/release/${GITHUB_SHA}"
+            tar xzf /home/printsh1/print.printshopeld/artifacts/${GITHUB_SHA}.tar.gz -C "/home/printsh1/print.printshopeld/release/${GITHUB_SHA}"
+            mv -n /home/printsh1/print.printshopeld/release/${GITHUB_SHA}/public/* /home/printsh1/print.printshopeld.com/phptelebot/public/
+            mv -n /home/printsh1/print.printshopeld.com/phptelebot/public/index.php /home/printsh1/print.printshopeld/release/${GITHUB_SHA}/public/
+            mv -n /home/printsh1/print.printshopeld.com/phptelebot/public/web.config /home/printsh1/print.printshopeld/release/${GITHUB_SHA}/public/
+            mv -n /home/printsh1/print.printshopeld.com/phptelebot/public/.htaccess /home/printsh1/print.printshopeld/release/${GITHUB_SHA}/public/
+            mv -n /home/printsh1/print.printshopeld.com/phptelebot/public/robots.txt /home/printsh1/print.printshopeld/release/${GITHUB_SHA}/public/
+            mv -n /home/printsh1/print.printshopeld.com/phptelebot/public/favicon.ico /home/printsh1/print.printshopeld/release/${GITHUB_SHA}/public/
+            rm -rf /home/printsh1/print.printshopeld/release/${GITHUB_SHA}/public/
+            rm -rf /home/printsh1/print.printshopeld/release/${GITHUB_SHA}/storage
+            if [ ! -d "/home/printsh1/print.printshopeld/storage" ]; then
+            mkdir -p /home/printsh1/print.printshopeld/storage/{app,public,framework,logs}
+            mkdir -p /home/printsh1/print.printshopeld/storage/framework/{cache,sessions,testing,views}
+            mkdir -p /home/printsh1/print.printshopeld/storage/framework/cache/data
+            chmod -R 0777 /home/printsh1/print.printshopeld/storage
+            fi
 # Run befor-hooks
   run-befor-hook:
     name: befor-hook
@@ -93,10 +102,10 @@ jobs:
         uses: appleboy/ssh-action@master
         env: 
           GITHUB_SHA: ${{ github.sha }}
-          RELEASE_PATH: /home/printsh1/print.printshopeld.com/release/${{github.sha}}
-          ACTIVE_RELEASE_PATH: /home/printsh1/print.printshopeld.com/current
-          STORAGE_PATH: /home/printsh1/print.printshopeld.com/storage
-          BASE_PATH: /home/printsh1/print.printshopeld.com
+          RELEASE_PATH: /home/printsh1/print.printshopeld/release/${{github.sha}}
+          ACTIVE_RELEASE_PATH: /home/printsh1/print.printshopeld/current
+          STORAGE_PATH: /home/printsh1/print.printshopeld/storage
+          BASE_PATH: /home/printsh1/print.printshopeld
         with:
           host: ${{ secrets.SSH_SITES_IP }}
           username: ${{ secrets.FTP_SITES_USER }}
@@ -115,10 +124,10 @@ jobs:
         uses: appleboy/ssh-action@master
         env: 
           GITHUB_SHA: ${{ github.sha }}
-          RELEASE_PATH: /home/printsh1/print.printshopeld.com/release/${{github.sha}}
-          ACTIVE_RELEASE_PATH: /home/printsh1/print.printshopeld.com/current
-          STORAGE_PATH: /home/printsh1/print.printshopeld.com/storage
-          BASE_PATH: /home/printsh1/print.printshopeld.com
+          RELEASE_PATH: /home/printsh1/print.printshopeld/release/${{github.sha}}
+          ACTIVE_RELEASE_PATH: /home/printsh1/print.printshopeld/current
+          STORAGE_PATH: /home/printsh1/print.printshopeld/storage
+          BASE_PATH: /home/printsh1/print.printshopeld
           LARAVEL_ENV: ${{ secrets.LARAVEL_ENV }}
         with:
           host: ${{ secrets.SSH_SITES_IP }}
@@ -126,7 +135,7 @@ jobs:
           password: ${{ secrets.FTP_SITES_PASSWORD }}
           port: ${{ secrets.SSH_SITES_PORT }}
           envs: GITHUB_SHA,RELEASE_PATH,ACTIVE_RELEASE_PATH,STORAGE_PATH,BASE_PATH,LARAVEL_ENV
-          # in case of trouble recognizing the changes after the link find a solytion to refresh
+          # in the event of trouble recognizing the changes after the link find a solytion to refresh
           script: |
             printf "%s" "$LARAVEL_ENV" > "${BASE_PATH}/.env"
             ln -s -n -f ${BASE_PATH}/.env $RELEASE_PATH
@@ -142,10 +151,10 @@ jobs:
         uses: appleboy/ssh-action@master
         env: 
           GITHUB_SHA: ${{ github.sha }}
-          RELEASE_PATH: /home/printsh1/print.printshopeld.com/release/${{github.sha}}
-          ACTIVE_RELEASE_PATH: /home/printsh1/print.printshopeld.com/current
-          STORAGE_PATH: /home/printsh1/print.printshopeld.com/storage
-          BASE_PATH: /home/printsh1/print.printshopeld.com
+          RELEASE_PATH: /home/printsh1/print.printshopeld/release/${{github.sha}}
+          ACTIVE_RELEASE_PATH: /home/printsh1/print.printshopeld/current
+          STORAGE_PATH: /home/printsh1/print.printshopeld/storage
+          BASE_PATH: /home/printsh1/print.printshopeld
         with:
           host: ${{ secrets.SSH_SITES_IP }}
           username: ${{ secrets.FTP_SITES_USER }}
@@ -163,8 +172,8 @@ jobs:
       - name: run-clean-up
         uses: appleboy/ssh-action@master
         env: 
-          RELEASE_PATH: /home/printsh1/print.printshopeld.com/release
-          ARTIFACTS_PATH: /home/printsh1/print.printshopeld.com/artifacts
+          RELEASE_PATH: /home/printsh1/print.printshopeld/release
+          ARTIFACTS_PATH: /home/printsh1/print.printshopeld/artifacts
         with:
           host: ${{ secrets.SSH_SITES_IP }}
           username: ${{ secrets.FTP_SITES_USER }}
