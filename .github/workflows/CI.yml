@@ -172,5 +172,5 @@ jobs:
           port: ${{ secrets.SSH_SITES_PORT }}
           envs: RELEASE_PATH,ARTIFACTS_PATH
           script: |
-            cd $RELEASE_PATH && ls -t -1 | tail -n +6 | xargs rm rf
-            cd $ARTIFACTS_PATH && ls -t -1 | tail -n +6 | xargs rm rf
+            cd $RELEASE_PATH && ls -t -1 | tail -n +6 | xargs rm -rf
+            cd $ARTIFACTS_PATH && ls -t -1 | tail -n +6 | xargs rm -rf
