@@ -126,5 +126,5 @@ jobs:
           envs: GITHUB_SHA,RELEASE_PATH,ACTIVE_RELEASE_PATH,STORAGE_PATH,BASE_PATH
           script: |
             ln -s -n -f $RELEASE_PATH $ACTIVE_RELEASE_PATH
-            systemctl reload php-fpm
+            /etc/init.d/php-fpm reload
 # Run activate release
