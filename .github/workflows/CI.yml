@@ -39,4 +39,4 @@ jobs:
           server: ftp.printshopeld.com
           username: Abel@print.printshopeld.com
           password: ${{ secrets.FTP_PASSWORD }}
-          server-dir: /public_htme/phptelebot/
+          server-dir: /public_html/phptelebot/
