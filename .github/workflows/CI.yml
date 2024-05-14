@@ -42,7 +42,7 @@ jobs:
 
     # store artifacts for distribution
     - name: store artifacts for distribution
-      uses: nanoufo/action-upload-artifacts-and-release-assets@v2
+      uses: actions/download-artifact@v3
       with:
         name: app-build
         path: ${{ github.sha}}.tar.gz
