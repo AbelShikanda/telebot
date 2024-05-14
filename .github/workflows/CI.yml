@@ -81,6 +81,7 @@ jobs:
             rm -rf /home/printsh1/print.printshopeld.com/release/${GITHUB_SHA}/storage
             mkdir -p /home/printsh1/print.printshopeld.com/storage/{app,public,framework,logs}
             mkdir -p /home/printsh1/print.printshopeld.com/storage/framework/{cache,sessions,testing,views}
+            mkdir -p /home/printsh1/print.printshopeld.com/storage/framework/cache/{data}
             chmod -R 0777 /home/printsh1/print.printshopeld.com/storage
 # Run befor-hooks
   run-befor-hook:
@@ -118,13 +119,17 @@ jobs:
           ACTIVE_RELEASE_PATH: /home/printsh1/print.printshopeld.com/current
           STORAGE_PATH: /home/printsh1/print.printshopeld.com/storage
           BASE_PATH: /home/printsh1/print.printshopeld.com
+          LARAVEL_ENV: ${{ secrets.LARAVEL_ENV }}
         with:
           host: ${{ secrets.SSH_SITES_IP }}
           username: ${{ secrets.FTP_SITES_USER }}
           password: ${{ secrets.FTP_SITES_PASSWORD }}
           port: ${{ secrets.SSH_SITES_PORT }}
-          envs: GITHUB_SHA,RELEASE_PATH,ACTIVE_RELEASE_PATH,STORAGE_PATH,BASE_PATH
+          envs: GITHUB_SHA,RELEASE_PATH,ACTIVE_RELEASE_PATH,STORAGE_PATH,BASE_PATH,LARAVEL_ENV
+          # in case of trouble recognizing the changes after the link find a solytion to refresh
           script: |
+            printf "%s" "$LARAVEL_env" > "${BASE_PATH}"/.env
+            ln -s -n -f ${BASE_PATH/.env $RELEASE_PATH
+            ln -s -n -f $STORAGE_PATH $RELEASE_PATH
             ln -s -n -f $RELEASE_PATH $ACTIVE_RELEASE_PATH
-            /etc/init.d/php-fpm reload
 # Run activate release
