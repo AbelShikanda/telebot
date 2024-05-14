@@ -27,7 +27,7 @@ jobs:
     - name: PHPUnit tests
       run: php artisan test
 
-# This workflow contains a single job called "build"
+# This workflow contains a single job called "web-deploy"
   ssh-git-pull:
     name: ssh-git-pull
     runs-on: ubuntu-latest
