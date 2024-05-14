@@ -18,10 +18,6 @@ jobs:
     # Runs a single command using the runners shell
     - name: Ls
       run: ls -la
-      
-    # Install composer
-    - name: Install composer dependencies
-      run: composer install --no-scripts
 
     # PHPUnit tests
     - name: PHPUnit tests
@@ -31,8 +27,26 @@ jobs:
     - name: Setup PHP Action
       uses: shivammathur/setup-php@2.30.4
       with:
-        php-version: '8.3'
+        php-version: '8.5'
         extensions: imagick, swoole, openssl
+    
+    
+    # Install composer
+    - name: Install composer dependencies
+      run: composer install --no-scripts --no-dev --prefer-dist
+
+    # create deploymet archive
+    - name: Create deployment archive
+      env: 
+        GITHUB_SHA: ${{ github.sha }}
+      run: tar -czf *${GITHUB_SHA}*.tar.gz --exclude=*.git --exclude=node_modules *
+
+    # store artifacts for distribution
+    - name: store artifacts for distribution
+      uses: actions/upload-artifacts@v2
+      with:
+        name: app-build
+        path: ${{ github.sha}}.tar.gz
 
 # This workflow contains a single job called "web-deploy"
   # ssh-git-pull:
