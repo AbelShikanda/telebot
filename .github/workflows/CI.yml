@@ -78,4 +78,53 @@ jobs:
           script: |
             mkdir -p "/home/printsh1/print.printshopeld.com/release/${GITHUB_SHA}"
             tar xzf /home/printsh1/print.printshopeld.com/artifacts/${GITHUB_SHA}.tar.gz -C "/home/printsh1/print.printshopeld.com/release/${GITHUB_SHA}"
-            
+            rm -rf /home/printsh1/print.printshopeld.com/release/${GITHUB_SHA}/storage
+            mkdir -p /home/printsh1/print.printshopeld.com/storage/{app,public,framework,logs}
+            mkdir -p /home/printsh1/print.printshopeld.com/storage/framework/{cache,sessions,testing,views}
+            chmod -R 0777 /home/printsh1/print.printshopeld.com/storage
+# Run befor-hooks
+  run-befor-hook:
+    name: befor-hook
+    runs-on: ubuntu-latest
+    needs: [web-deploy, ssh-release]
+    steps:
+      - name: run-befor-hooks
+        uses: appleboy/ssh-action@master
+        env: 
+          GITHUB_SHA: ${{ github.sha }}
+          RELEASE_PATH: /home/printsh1/print.printshopeld.com/release/${{github.sha}}
+          ACTIVE_RELEASE_PATH: /home/printsh1/print.printshopeld.com/current
+          STORAGE_PATH: /home/printsh1/print.printshopeld.com/storage
+          BASE_PATH: /home/printsh1/print.printshopeld.com
+        with:
+          host: ${{ secrets.SSH_SITES_IP }}
+          username: ${{ secrets.FTP_SITES_USER }}
+          password: ${{ secrets.FTP_SITES_PASSWORD }}
+          port: ${{ secrets.SSH_SITES_PORT }}
+          envs: GITHUB_SHA,RELEASE_PATH,ACTIVE_RELEASE_PATH,STORAGE_PATH,BASE_PATH
+          script: |
+            echo "${GITHUB_SHA}"
+# Run activate release
+  activate-release:
+    name: activate-release
+    runs-on: ubuntu-latest
+    needs: [web-deploy, ssh-release, run-befor-hook]
+    steps:
+      - name: run-befor-hooks
+        uses: appleboy/ssh-action@master
+        env: 
+          GITHUB_SHA: ${{ github.sha }}
+          RELEASE_PATH: /home/printsh1/print.printshopeld.com/release/${{github.sha}}
+          ACTIVE_RELEASE_PATH: /home/printsh1/print.printshopeld.com/current
+          STORAGE_PATH: /home/printsh1/print.printshopeld.com/storage
+          BASE_PATH: /home/printsh1/print.printshopeld.com
+        with:
+          host: ${{ secrets.SSH_SITES_IP }}
+          username: ${{ secrets.FTP_SITES_USER }}
+          password: ${{ secrets.FTP_SITES_PASSWORD }}
+          port: ${{ secrets.SSH_SITES_PORT }}
+          envs: GITHUB_SHA,RELEASE_PATH,ACTIVE_RELEASE_PATH,STORAGE_PATH,BASE_PATH
+          script: |
+            ln -s -n -f $RELEASE_PATH $ACTIVE_RELEASE_PATH
+            service php 8.3-fpm reload
+# Run activate release
