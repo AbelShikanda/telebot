@@ -21,7 +21,7 @@ jobs:
 
     # Install composer
     - name: Install composer dependencies
-      run: composer install --no-scripts --no-dev --prefer-dist
+      run: composer install --no-scripts 
 
     # PHPUnit tests
     - name: PHPUnit tests
