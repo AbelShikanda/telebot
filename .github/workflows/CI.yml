@@ -42,7 +42,7 @@ jobs:
 
     # store artifacts for distribution
     - name: store artifacts for distribution
-      uses: actions/download-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: app-build
         path: ${{ github.sha}}.tar.gz
