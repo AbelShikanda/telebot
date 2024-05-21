@@ -3,129 +3,179 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
+use Telegram\Bot\Api;
 
 class telebotController extends Controller
 {
-    //++++++++++++++++++++++++++++++++++++++++++++++++++++++
-    private $baseUrl;
-    //++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    protected $telegram;
 
     /**
      * Create a new controller instance.
      *
-     * @return void
+     * @param  Api  $telegram
      */
-    public function __construct()
+    public function __construct(Api $telegram)
     {
-        $this->baseUrl = env('API_URL') . env('BOT_TOKEN');
+        $this->telegram = $telegram;
     }
 
     /**
-     * get data sent to the php://input
-     * Place it in a log file and decode it
-     * Chech message to determine the response
-     * @param  \Illuminate\Http\Request  $request
-     * run telebotApi to respond
+     * Display a listing of the resource.
+     *
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request)
+    public function index()
     {
-        // $message = json_encode($request->all());
-        // $messageId = $request->input('message.from.id');
-        // $name = $request->input('message.from.first_name');
-
-        // Storage::disk('local')->put('log.txt', $message);
-
-        $data = file_get_contents('php://input');
-        $logFIle = "webhooksentdata.json";
-        $log = fopen($logFIle, 'a');
-        fwrite($log, $data);
-        fclose($log);
-
-        // Check if $getData is not null and if it contains the expected keys
-        if (!empty($getData) && isset($getData['message']['from']['id']) && isset($getData['message']['text'])) {
-
-            // // Retrieve the data
-            $getData = json_decode($data, true);
-            $userid = $getData['message']['from']['id'];
-            $userMessage = $getData['message']['text'];
-
-            // check to determine how to respond
-            if ($userMessage == "Hi" || $userMessage == "hi" || $userMessage == "Hello" || $userMessage == "hello") {
-                // respond to the message
-                $botReply = "Hi there! How can i help you?";
-            } elseif ($userMessage == "How are you" || $userMessage == "how are you") {
-                // respond to the message
-                $botReply = "I'm fine, thank you. How are you?";
-            } else {
-                // respond to the message
-                $botReply = "Sorry, I don't understand.";
-            }
-
-            // get the parameters required
-            $param = array(
-                "chat_id" => $userid,
-                "text" => $botReply,
-                "parse_mode" => "html"
-            );
-
-            // send the response
-            $this->TelebotApi("sendMessage", $userid, $param);
-            // return the response
-            // return $botReply;
-            return view('welcome');
-        } else {
-            // Handle the case where the expected keys are not present
-            $botReply = "Error: Invalid message format";
-        }
-        return view('welcome');
+        //
     }
 
     /**
-     * setting a webhook
+     * Show the form for creating a new resource.
      *
-     * This function does the following:
-     * - Get the url where to set the webhook
-     * - Run the telegram function to set the webhook
-     *
-     * @param  
-     * @return Return value of the result (optional)
+     * @return \Illuminate\Http\Response
      */
-    public function setWebhook()
+    public function create()
     {
-        $webHookUrl = "https://www.print.printshopeld.com/phptelebot/index.php";
-        $apiUrl = $this->baseUrl . '/' . 'setWebhook' . '?url=' . $webHookUrl;
-        $res = file_get_contents($apiUrl);
-
-        return view('setWebhook', $res);
+        //
     }
 
     /**
-     * private funvtion to send responce
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function store(Request $request)
+    {
+        //
+    }
+
+    /**
+     * Display the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function show($id)
+    {
+        $response = $this->telegram->getMe();
+
+        return $response;
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function edit($id)
+    {
+        //
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function update(Request $request, $id)
+    {
+        //
+    }
+
+    /**
+     * A function to send messages
      *
      * This function does the following:
-     * - retrieves the url path
-     * - uses the php curl
-     * - Sends a response
+     * - Step 1
+     * - Step 2
+     * - Step 3
      *
-     * @param  int $id  users id
-     * @param  array $param  array of parameters
-     * @param  string of the function name
+     * @param  Parameter type  Parameter name Description of the parameter (optional)
      * @return Return type Description of the return value (optional)
      */
-    private function TelebotApi($method, $id, $param)
+    public function sendMessage($chat_id, $message) 
     {
-        // send the response
-        $url = $this->baseUrl . '/' . $method . '?chat_id=' . $id . '&' . http_build_query($param);
-        $ch = curl_init();
-        $optArray = array(
-            CURLOPT_URL => $url,
-            CURLOPT_RETURNTRANSFER => true
-        );
-        curl_setopt_array($ch, $optArray);
-        $result = curl_exec($ch);
-        curl_close($ch);
-        return $result;
+        $response = $this->telegram->sendMessage([
+            'chat_id' => 'CHAT_ID',
+            'text' => 'Hello World'
+        ]);
+        
+        $messageId = $response->getMessageId();
+    }
+
+    /**
+     * A function to forward messages
+     *
+     * This function does the following:
+     * - Step 1
+     * - Step 2
+     * - Step 3
+     *
+     * @param  Parameter type  Parameter name Description of the parameter (optional)
+     * @return Return type Description of the return value (optional)
+     */
+    public function forwardMessage($chat_id, $message)
+    {
+        $response = $this->telegram->forwardMessage([
+            'chat_id' => 'CHAT_ID',
+            'from_chat_id' => 'FROM_CHAT_ID',
+            'message_id' => 'MESSAGE_ID'
+        ]);
+        
+        $messageId = $response->getMessageId();
+    }
+
+    /**
+     * A function to send photos
+     *
+     * This function does the following:
+     * - Step 1
+     * - Step 2
+     * - Step 3
+     *
+     * @param  Parameter type  Parameter name Description of the parameter (optional)
+     * @return Return type Description of the return value (optional)
+     */
+    public function sendPhoto($chat_id, $photo)
+    {
+        $response = $this->telegram->sendPhoto([
+            'chat_id' => 'CHAT_ID',
+            'photo' => 'path/to/photo.jpg',
+            // 'photo' => 'http://example.com/photos/image.jpg',
+            'caption' => 'Some caption'
+        ]);
+        
+        $messageId = $response->getMessageId();
+    }
+
+    /**
+     * A function to get updates
+     *
+     * This function does the following:
+     * - Step 1
+     * - Step 2
+     * - Step 3
+     *
+     * @param  Parameter type  Parameter name Description of the parameter (optional)
+     * @return Return type Description of the return value (optional)
+     */
+    public function getUpdates()
+    {
+        $updates = $this->telegram->getUpdates();
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy($id)
+    {
+        //
     }
 }
