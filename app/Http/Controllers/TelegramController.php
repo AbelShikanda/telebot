@@ -102,6 +102,10 @@ class TelegramController extends Controller
     {
         $update = $this->telegram->getWebhookUpdates();
 
+        // in the eveno of above beind depreciated
+        // if ($request->isMethod('post')) {
+        //     $update = json_decode($request->getContent(), true);
+
         if ($update->isType('message')) {
             $message = $update->getMessage();
             $chat = $message->getChat();
