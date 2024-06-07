@@ -75,77 +75,6 @@ class TelegramController extends Controller
         $this->sendMessage($message);
     }
  
-    public function showGlobal()
-    {
-        $data = CoinMarketCap::getGlobalData();
- 
-        $this->sendMessage($this->formatArray($data), true);
-    }
- 
-    public function getTicker()
-    {
-        $data = CoinMarketCap::getTicker();
-        $formatted_data = "";
- 
-        foreach ($data as $datum) {
-            $formatted_data .= $this->formatArray($datum);
-            $formatted_data .= "-----------\n";
-        }
- 
-        $this->sendMessage($formatted_data, true);
-    }
- 
-    public function getCurrencyTicker()
-    {
-        $message = "Please enter the name of the Cryptocurrency";
- 
-        Telegram::create([
-            'username' => $this->username,
-            'command' => __FUNCTION__
-        ]);
- 
-        $this->sendMessage($message);
-    }
- 
-    public function checkDatabase()
-    {
-        try {
-            $telegram = Telegram::where('username', $this->username)->latest()->firstOrFail();
- 
-            if ($telegram->command == 'getCurrencyTicker') {
-                $response = CoinMarketCap::getCurrencyTicker($this->text);
- 
-                if (isset($response['error'])) {
-                    $message = 'Sorry no such cryptocurrency found';
-                } else {
-                    $message = $this->formatArray($response[0]);
-                }
- 
-                Telegram::where('username', $this->username)->delete();
- 
-                $this->sendMessage($message, true);
-            }
-        } catch (Exception $exception) {
-            $error = "Sorry, no such cryptocurrency found.\n";
-            $error .= "Please select one of the following options";
-            $this->showMenu($error);
-        }
-    }
- 
-    protected function formatArray($data)
-    {
-        $formatted_data = "";
-        foreach ($data as $item => $value) {
-            $item = str_replace("_", " ", $item);
-            if ($item == 'last updated') {
-                $value = Carbon::createFromTimestampUTC($value)->diffForHumans();
-            }
-            $formatted_data .= "<b>{$item}</b>\n";
-            $formatted_data .= "\t{$value}\n";
-        }
-        return $formatted_data;
-    }
- 
     protected function sendMessage($message, $parse_html = false)
     {
         $data = [
@@ -167,35 +96,6 @@ class TelegramController extends Controller
         $text = "Hello, this is my custom command!";
 
         $this->replyWithMessage(compact('chatId', 'text'));
-    }
-
-    public function webhook(Request $request)
-    {
-        $update = Telegram::getWebhookUpdates();
-
-        if ($update->isType('inline_query')) {
-            $inlineQuery = $update->getInlineQuery();
-            $queryId = $inlineQuery->getId();
-            $queryText = $inlineQuery->getQuery();
-
-            $results = [
-                [
-                    'type' => 'article',
-                    'id' => 'unique-id-1',
-                    'title' => 'Sample Result',
-                    'input_message_content' => [
-                        'message_text' => 'This is a sample response to the inline query'
-                    ]
-                ]
-            ];
-
-            Telegram::answerInlineQuery([
-                'inline_query_id' => $queryId,
-                'results' => json_encode($results)
-            ]);
-        }
-
-        return response()->json(['status' => 'success']);
     }
 
     public function handleWebhook(Request $request)
@@ -223,6 +123,26 @@ class TelegramController extends Controller
                 default:
                     $this->handleUnknownChatType($chatId);
             }
+        }else if ($update->isType('inline_query')) {
+            $inlineQuery = $update->getInlineQuery();
+            $queryId = $inlineQuery->getId();
+            $queryText = $inlineQuery->getQuery();
+
+            $results = [
+                [
+                    'type' => 'article',
+                    'id' => 'unique-id-1',
+                    'title' => 'Sample Result',
+                    'input_message_content' => [
+                        'message_text' => 'This is a sample response to the inline query'
+                    ]
+                ]
+            ];
+
+            Telegram::answerInlineQuery([
+                'inline_query_id' => $queryId,
+                'results' => json_encode($results)
+            ]);
         }
 
         return response()->json(['status' => 'success']);

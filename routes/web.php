@@ -12,32 +12,32 @@ Route::get('/', function () {
 //+++++++++++++++++++++++++++++
 //Auth::routes();
 //+++++++++++++++++++++++++++++
-Route::get('/get-me', [TelegramController::class, 'getMe']);
+Route::get('/get-me', [TelegramController::class, 'getMe'])->name('getMe');
 // //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-Route::get('/set-hook', [TelegramController::class, 'setWebHook']);
+Route::get('/set/hook', [TelegramController::class, 'setWebHook'])->name('setWebHook');
 // //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-Route::post(env('TELEGRAM_BOT_TOKEN') . '/webhook', [TelegramController::class, 'handleRequest']);
+Route::post(env('TELEGRAM_BOT_TOKEN') . '/webhook', [TelegramController::class, 'handleRequest'])->name('handleRequest');
 // //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-// Route::get('/', [App\Http\Controllers\TelegramBotController::class, 'index']);
+Route::get('/telegram/handle', [TelegramController::class, 'handleRequest'])->name('handleRequest');
 // //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-// Route::get('sendMessage', [App\Http\Controllers\TelegramBotController::class, 'sendMessage']);
+Route::get('/telegram/show/menu', [TelegramController::class, 'showMenu'])->name('showMenu');
 // //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-// Route::get('sendPhoto', [App\Http\Controllers\TelegramBotController::class, 'sendPhoto']);
+Route::get('/telegram/send/message', [TelegramController::class, 'sendMessage'])->name('sendMessage');
 // //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-// Route::get('sendAudio', [App\Http\Controllers\TelegramBotController::class, 'sendAudio']);
+Route::get('/telegram/handle', [TelegramController::class, 'handle'])->name('handle');
 // //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-// Route::get('sendVideo', [App\Http\Controllers\TelegramBotController::class, 'sendVideo']);
+Route::get('/telegram/handle/webhook', [TelegramController::class, 'handleWebhook'])->name('handleWebhook');
 // //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-// Route::get('sendVoice', [App\Http\Controllers\TelegramBotController::class, 'sendVoice']);
+Route::get('/telegram/private/chat', [TelegramController::class, 'handlePrivateChat'])->name('handlePrivateChat');
 // //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-// Route::get('sendDocument', [App\Http\Controllers\TelegramBotController::class, 'sendDocument']);
+Route::get('/telegram/group/chat', [TelegramController::class, 'handleGroupChat'])->name('handleGroupChat');
 // //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-// Route::get('sendLocation', [App\Http\Controllers\TelegramBotController::class, 'sendLocation']);
+Route::get('/telegram/channel', [TelegramController::class, 'handleChannel'])->name('handleChannel');
 // //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-// Route::get('sendVenue', [App\Http\Controllers\TelegramBotController::class, 'sendVenue']);
+Route::get('/telegram/unknown/chat/type', [TelegramController::class, 'handleUnknownChatType'])->name('handleUnknownChatType');
 // //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-// Route::get('sendContact', [App\Http\Controllers\TelegramBotController::class, 'sendContact']);
+// Route::get('sendContact', [TelegramController::class, 'sendContact']);
 // //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-// Route::get('sendPoll', [App\Http\Controllers\TelegramBotController::class, 'sendPoll']);
+// Route::get('sendPoll', [App\Http\Controllers\TelegramController::class, 'sendPoll']);
 // //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-// Route::get('telegram-message-webhook', [App\Http\Controllers\TelegramBotController::class, 'telegram_webhook']);
+// Route::get('telegram-message-webhook', [App\Http\Controllers\TelegramController::class, 'telegram_webhook']);
