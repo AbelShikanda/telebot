@@ -16,18 +16,18 @@ class TelegramController extends Controller
     protected $chat_id;
     protected $username;
     protected $text;
- 
+
     public function __construct()
     {
         $this->telegram = new Api(env('TELEGRAM_BOT_TOKEN'));
     }
- 
+
     public function getMe()
     {
         $response = $this->telegram->getMe();
         return $response;
     }
- 
+
     public function setWebHook()
     {
         $url = 'https://www.print.printshopeld.com/' . env('TELEGRAM_BOT_TOKEN') . '/webhook';
@@ -35,13 +35,13 @@ class TelegramController extends Controller
 
         return $response == true ? redirect()->back() : dd($response);
     }
- 
+
     public function handleRequest(Request $request)
     {
         $this->chat_id = $request['message']['chat']['id'];
         $this->username = $request['message']['from']['username'];
         $this->text = $request['message']['text'];
- 
+
         switch ($this->text) {
             case '/start':
             case '/menu':
@@ -60,7 +60,7 @@ class TelegramController extends Controller
                 $this->checkDatabase();
         }
     }
- 
+
     public function showMenu($info = null)
     {
         $message = '';
@@ -71,19 +71,19 @@ class TelegramController extends Controller
         $message .= '/getGlobal' . chr(10);
         $message .= '/getTicker' . chr(10);
         $message .= '/getCurrencyTicker' . chr(10);
- 
+
         $this->sendMessage($message);
     }
- 
+
     protected function sendMessage($message, $parse_html = false)
     {
         $data = [
             'chat_id' => $this->chat_id,
             'text' => $message,
         ];
- 
+
         if ($parse_html) $data['parse_mode'] = 'HTML';
- 
+
         $this->telegram->sendMessage($data);
     }
 
@@ -100,8 +100,8 @@ class TelegramController extends Controller
 
     public function handleWebhook(Request $request)
     {
-        $update = Telegram::getWebhookUpdates();
-        
+        $update = $this->telegram->getWebhookUpdates();
+
         if ($update->isType('message')) {
             $message = $update->getMessage();
             $chat = $message->getChat();
@@ -123,7 +123,7 @@ class TelegramController extends Controller
                 default:
                     $this->handleUnknownChatType($chatId);
             }
-        }else if ($update->isType('inline_query')) {
+        } else if ($update->isType('inline_query')) {
             $inlineQuery = $update->getInlineQuery();
             $queryId = $inlineQuery->getId();
             $queryText = $inlineQuery->getQuery();
@@ -139,7 +139,8 @@ class TelegramController extends Controller
                 ]
             ];
 
-            Telegram::answerInlineQuery([
+            // Telegram::answerInlineQuery([
+            $this->telegram->answerInlineQuery([
                 'inline_query_id' => $queryId,
                 'results' => json_encode($results)
             ]);
@@ -151,7 +152,7 @@ class TelegramController extends Controller
     private function handlePrivateChat($chatId, $text)
     {
         $reply = "This is a private chat. You said: " . $text;
-        Telegram::sendMessage([
+        $this->telegram->sendMessage([
             'chat_id' => $chatId,
             'text' => $reply
         ]);
@@ -160,7 +161,7 @@ class TelegramController extends Controller
     private function handleGroupChat($chatId, $text)
     {
         $reply = "This is a group chat. You said: " . $text;
-        Telegram::sendMessage([
+        $this->telegram->sendMessage([
             'chat_id' => $chatId,
             'text' => $reply
         ]);
@@ -169,7 +170,7 @@ class TelegramController extends Controller
     private function handleChannel($chatId, $text)
     {
         $reply = "This is a channel. You said: " . $text;
-        Telegram::sendMessage([
+        $this->telegram->sendMessage([
             'chat_id' => $chatId,
             'text' => $reply
         ]);
@@ -178,7 +179,7 @@ class TelegramController extends Controller
     private function handleUnknownChatType($chatId)
     {
         $reply = "This is an unknown type of chat.";
-        Telegram::sendMessage([
+        $this->telegram->sendMessage([
             'chat_id' => $chatId,
             'text' => $reply
         ]);
