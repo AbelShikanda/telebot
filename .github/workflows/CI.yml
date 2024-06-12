@@ -148,24 +148,16 @@ jobs:
     steps:
       - name: Set up Node.js
         uses: actions/setup-node@v4
-        env: 
-          GITHUB_SHA: ${{ github.sha }}
-          RELEASE_PATH: /home/printsh1/print.printshopeld/release/${{github.sha}}
-          ACTIVE_RELEASE_PATH: /home/printsh1/print.printshopeld/current
-          STORAGE_PATH: /home/printsh1/print.printshopeld/storage
-          BASE_PATH: /home/printsh1/print.printshopeld
-          LARAVEL_ENV: ${{ secrets.LARAVEL_ENV }}
         with:
-          envs: GITHUB_SHA,RELEASE_PATH,ACTIVE_RELEASE_PATH,STORAGE_PATH,BASE_PATH,LARAVEL_ENV
           node-version: '21.7.2'
 
       - name: Install Dependencies
         run: npm install
-        working-directory: ACTIVE_RELEASE_PATH
+        working-directory: /home/printsh1/print.printshopeld/current
 
       - name: Build Assets
         run: npm run dev
-        working-directory: ACTIVE_RELEASE_PATH
+        working-directory: /home/printsh1/print.printshopeld/current
 
       - name: run-activate-release
         uses: appleboy/ssh-action@master
