@@ -101,17 +101,17 @@ jobs:
             fi
 
             if [ -d "/home/printsh1/print.printshopeld/release/${GITHUB_SHA}/public/assets" ]; then
-            mv -rf "/home/printsh1/print.printshopeld/release/${GITHUB_SHA}/public/assets" "/home/user/print.printshopeld.com/phptelebot/public"
+            mv -R "/home/printsh1/print.printshopeld/release/${GITHUB_SHA}/public/assets" "/home/user/print.printshopeld.com/phptelebot/public"
             else
                 echo "Source directory does not exist. Skipping move operation."
             fi
             if [ -d "/home/printsh1/print.printshopeld/release/${GITHUB_SHA}/public/css" ]; then
-            mv -rf "/home/printsh1/print.printshopeld/release/${GITHUB_SHA}/public/css" "/home/user/print.printshopeld.com/phptelebot/public"
+            mv -R "/home/printsh1/print.printshopeld/release/${GITHUB_SHA}/public/css" "/home/user/print.printshopeld.com/phptelebot/public"
             else
                 echo "Source directory does not exist. Skipping move operation."
             fi
             if [ -d "/home/printsh1/print.printshopeld/release/${GITHUB_SHA}/public/js" ]; then
-            mv -rf "/home/printsh1/print.printshopeld/release/${GITHUB_SHA}/public/js" "/home/user/print.printshopeld.com/phptelebot/public"
+            mv -R "/home/printsh1/print.printshopeld/release/${GITHUB_SHA}/public/js" "/home/user/print.printshopeld.com/phptelebot/public"
             else
                 echo "Source directory does not exist. Skipping move operation."
             fi
