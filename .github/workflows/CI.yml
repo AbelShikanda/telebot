@@ -116,7 +116,7 @@ jobs:
                 echo "Source directory does not exist. Skipping move operation."
             fi
 
-            mv -rf "/home/printsh1/print.printshopeld/release/${GITHUB_SHA}/public/mix-manifest.json" "/home/printsh1/print.printshopeld.com/phptelebot/public"
+            mv -f "/home/printsh1/print.printshopeld/release/${GITHUB_SHA}/public/mix-manifest.json" "/home/printsh1/print.printshopeld.com/phptelebot/public"
             
             rm -rf /home/printsh1/print.printshopeld/release/${GITHUB_SHA}/public/
 # Run befor-hooks
