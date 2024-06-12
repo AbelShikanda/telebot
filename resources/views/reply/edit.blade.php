@@ -2,6 +2,16 @@
 
 @section('content')
     <div class="container">
+        @if (count($errors) > 0)
+            <div class="alert alert-danger col-md-8 offset-md-3">
+                <strong>Whoops!</strong> There were some problems with your input.<br><br>
+                <ul>
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
         <div class="row justify-content-center" style="margin-top: 100px">
             <div class="col-6">
                 <form action="{{ route('replies.update', $replies->id) }}" method="POST">

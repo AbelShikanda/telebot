@@ -11,7 +11,8 @@
         "irazasyed/telegram-bot-sdk": "^3.9",
         "laravel/framework": "^8.54",
         "laravel/tinker": "^2.5",
-        "laravel/ui": "^3.4"
+        "laravel/ui": "^3.4",
+        "php-text-analysis/php-text-analysis": "^1.0"
     },
     "require-dev": {
         "facade/ignition": "^2.5",

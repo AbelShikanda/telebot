@@ -111,8 +111,8 @@ class RepliesController extends Controller
     {
         $replies = Replies::findOrFail($id);
         $request->validate([
-            'keywords' => 'required',
-            'reply' => 'required',
+            'keywords' => '',
+            'reply' => '',
         ]);
         // dd($replies);
         
@@ -122,8 +122,8 @@ class RepliesController extends Controller
 
             if ($replies) {
                 if ($request->keywords) {
-                    $keywords = $request->keywords;
-                    $replies->keyword = $keywords;
+                    $words = $request->keywords;
+                    $replies->keyword = $words;
                 }
                 if ($request->reply) {
                     $reply = $request->reply;
