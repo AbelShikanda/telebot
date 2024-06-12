@@ -164,13 +164,23 @@ class TelegramController extends Controller
         // Normalize the received text to lowercase to handle case-insensitive matching
         $normalizedText = strtolower(trim($text));
 
-        // Check if there is a specific reply for the received message
-        if (array_key_exists($normalizedText, $replies)) {
-            $reply = $replies[$normalizedText];
-        } else {
-            // Default reply if no specific match is found
-            $reply = "This is a private chat. You said: " . $text;
+        $reply = "I did not understand your message";
+
+        // Check if any of the words/phrases are present in the received message
+        foreach ($replies as $keyword => $response) {
+            if (strpos($normalizedText, $keyword) !== false) {
+                $reply = $response;
+                break;
+            }
         }
+
+        // // Check if there is a specific reply for the received message
+        // if (array_key_exists($normalizedText, $replies)) {
+        //     $reply = $replies[$normalizedText];
+        // } else {
+        //     // Default reply if no specific match is found
+        //     $reply = "This is a private chat. You said: " . $text;
+        // }
         // $reply = "This is a private chat. You said: " . $text;
         $this->telegram->sendMessage([
             'chat_id' => $chatId,
