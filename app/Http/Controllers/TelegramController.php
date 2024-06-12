@@ -155,7 +155,23 @@ class TelegramController extends Controller
 
     private function handlePrivateChat($chatId, $text)
     {
-        $reply = "This is a private chat. You said: " . $text;
+        $replies = [
+            "hello" => "Hello! How can I help you today?",
+            "how are you" => "I'm just a bot, but I'm here to assist you!",
+            "bye" => "Goodbye! Have a great day!",
+            "how much" => "Each tee goes for 850/-",
+        ];
+        // Normalize the received text to lowercase to handle case-insensitive matching
+        $normalizedText = strtolower(trim($text));
+
+        // Check if there is a specific reply for the received message
+        if (array_key_exists($normalizedText, $replies)) {
+            $reply = $replies[$normalizedText];
+        } else {
+            // Default reply if no specific match is found
+            $reply = "This is a private chat. You said: " . $text;
+        }
+        // $reply = "This is a private chat. You said: " . $text;
         $this->telegram->sendMessage([
             'chat_id' => $chatId,
             'text' => $reply
