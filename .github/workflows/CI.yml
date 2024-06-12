@@ -175,8 +175,6 @@ jobs:
           script: |
             cd $ACTIVE_RELEASE_PATH
             php artisan migrate --force
-            npm install
-            npm run prod
 # Run activate release
   run-after-hook:
     name: after-hook
