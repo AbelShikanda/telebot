@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\HomeController;
+use App\Http\Controllers\RepliesController;
 use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\telebotController;
@@ -12,6 +14,8 @@ Route::get('/', function () {
 //+++++++++++++++++++++++++++++
 //Auth::routes();
 //+++++++++++++++++++++++++++++
+Route::get('/home', [HomeController::class, 'index'])->name('home');
+// //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 Route::get('/get-me', [TelegramController::class, 'getMe'])->name('getMe');
 // //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 Route::get('/set/hook', [TelegramController::class, 'setWebHook'])->name('setWebHook');
@@ -36,7 +40,7 @@ Route::get('/telegram/channel', [TelegramController::class, 'handleChannel'])->n
 // //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 Route::get('/telegram/unknown/chat/type', [TelegramController::class, 'handleUnknownChatType'])->name('handleUnknownChatType');
 // //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-// Route::get('sendContact', [TelegramController::class, 'sendContact']);
+Route::resource('replies', RepliesController::class);
 // //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 // Route::get('sendPoll', [App\Http\Controllers\TelegramController::class, 'sendPoll']);
 // //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
