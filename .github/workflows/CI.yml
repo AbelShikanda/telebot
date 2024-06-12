@@ -153,11 +153,9 @@ jobs:
 
       - name: Install Dependencies
         run: npm install
-        working-directory: /home/printsh1/print.printshopeld/current
 
       - name: Build Assets
         run: npm run dev
-        working-directory: /home/printsh1/print.printshopeld/current
 
       - name: run-activate-release
         uses: appleboy/ssh-action@master
@@ -178,6 +176,8 @@ jobs:
           script: |
             cd $ACTIVE_RELEASE_PATH
             php artisan migrate --force
+            npm install
+            npm run prod
 # Run activate release
   run-after-hook:
     name: after-hook
