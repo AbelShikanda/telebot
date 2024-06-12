@@ -101,25 +101,22 @@ jobs:
             fi
 
             if [ -d "/home/printsh1/print.printshopeld/release/${GITHUB_SHA}/public/assets" ]; then
-            mv -f "/home/printsh1/print.printshopeld/release/${GITHUB_SHA}/public/assets" "/home/printsh1/print.printshopeld.com/phptelebot/public"
+            mv -T "/home/printsh1/print.printshopeld/release/${GITHUB_SHA}/public/assets" "/home/printsh1/print.printshopeld.com/phptelebot/public"
             else
                 echo "Source directory does not exist. Skipping move operation."
             fi
             if [ -d "/home/printsh1/print.printshopeld/release/${GITHUB_SHA}/public/css" ]; then
-            mv -f "/home/printsh1/print.printshopeld/release/${GITHUB_SHA}/public/css" "/home/printsh1/print.printshopeld.com/phptelebot/public"
+            mv -T "/home/printsh1/print.printshopeld/release/${GITHUB_SHA}/public/css" "/home/printsh1/print.printshopeld.com/phptelebot/public"
             else
                 echo "Source directory does not exist. Skipping move operation."
             fi
             if [ -d "/home/printsh1/print.printshopeld/release/${GITHUB_SHA}/public/js" ]; then
-            mv -f "/home/printsh1/print.printshopeld/release/${GITHUB_SHA}/public/js" "/home/printsh1/print.printshopeld.com/phptelebot/public"
+            mv -T "/home/printsh1/print.printshopeld/release/${GITHUB_SHA}/public/js" "/home/printsh1/print.printshopeld.com/phptelebot/public"
             else
                 echo "Source directory does not exist. Skipping move operation."
             fi
-            if [ -d "/home/printsh1/print.printshopeld/release/${GITHUB_SHA}/public/mix-manifest.json" ]; then
-            mv -f "/home/printsh1/print.printshopeld/release/${GITHUB_SHA}/public/mix-manifest.json" "/home/printsh1/print.printshopeld.com/phptelebot/public"
-            else
-                echo "Source directory does not exist. Skipping move operation."
-            fi
+
+            mv -rf "/home/printsh1/print.printshopeld/release/${GITHUB_SHA}/public/mix-manifest.json" "/home/printsh1/print.printshopeld.com/phptelebot/public"
             
             rm -rf /home/printsh1/print.printshopeld/release/${GITHUB_SHA}/public/
 # Run befor-hooks
