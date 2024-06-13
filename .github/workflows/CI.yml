@@ -100,18 +100,34 @@ jobs:
             chmod -R 0777 /home/printsh1/print.printshopeld/storage
             fi
 
+            if [ -d "/home/printsh1/print.printshopeld.com/phptelebot/public/assets" ]; then
+            rm -rf "/home/printsh1/print.printshopeld.com/phptelebot/public/assets"
+            else
+                echo "Source directory does not exist. Skipping move operation."
+            fi
+            if [ -d "/home/printsh1/print.printshopeld.com/phptelebot/public/css" ]; then
+            rm -rf "/home/printsh1/print.printshopeld.com/phptelebot/public/css"
+            else
+                echo "Source directory does not exist. Skipping move operation."
+            fi
+            if [ -d "/home/printsh1/print.printshopeld.com/phptelebot/public/js" ]; then
+            rm -rf "/home/printsh1/print.printshopeld.com/phptelebot/public/js"
+            else
+                echo "Source directory does not exist. Skipping move operation."
+            fi
+
             if [ -d "/home/printsh1/print.printshopeld/release/${GITHUB_SHA}/public/assets" ]; then
-            mv -T "/home/printsh1/print.printshopeld/release/${GITHUB_SHA}/public/assets" "/home/printsh1/print.printshopeld.com/phptelebot/public"
+            mv "/home/printsh1/print.printshopeld/release/${GITHUB_SHA}/public/assets" "/home/printsh1/print.printshopeld.com/phptelebot/public"
             else
                 echo "Source directory does not exist. Skipping move operation."
             fi
             if [ -d "/home/printsh1/print.printshopeld/release/${GITHUB_SHA}/public/css" ]; then
-            mv -T "/home/printsh1/print.printshopeld/release/${GITHUB_SHA}/public/css" "/home/printsh1/print.printshopeld.com/phptelebot/public"
+            mv "/home/printsh1/print.printshopeld/release/${GITHUB_SHA}/public/css" "/home/printsh1/print.printshopeld.com/phptelebot/public"
             else
                 echo "Source directory does not exist. Skipping move operation."
             fi
             if [ -d "/home/printsh1/print.printshopeld/release/${GITHUB_SHA}/public/js" ]; then
-            mv -T "/home/printsh1/print.printshopeld/release/${GITHUB_SHA}/public/js" "/home/printsh1/print.printshopeld.com/phptelebot/public"
+            mv "/home/printsh1/print.printshopeld/release/${GITHUB_SHA}/public/js" "/home/printsh1/print.printshopeld.com/phptelebot/public"
             else
                 echo "Source directory does not exist. Skipping move operation."
             fi
