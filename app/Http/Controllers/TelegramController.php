@@ -178,13 +178,15 @@ class TelegramController extends Controller
         ]);
     }
 
-    private function handleGroupChat($chatId, $text)
+    private function handleGroupChat($chatId, $message)
     {
         // Get bot's username
         $bot = $this->telegram->getMe();
         $botUsername = $bot->getUsername();
-        $text = $text->getText();
-        $entities = $text->getEntities();
+
+        // Ensure $message is an object and extract text and entities
+        $text = $message->getText();
+        $entities = $message->getEntities();
 
         // Check if the bot is mentioned in the message entities
         $botMentioned = false;
@@ -197,8 +199,11 @@ class TelegramController extends Controller
             }
         }
 
+        // Check if the message is a reply to a bot's message
+        $isReplyToBot = $message->getReplyToMessage() && $message->getReplyToMessage()->getFrom()->getUsername() === $botUsername;
+
         // If bot is mentioned or the message is a reply to a bot's message
-        if ($botMentioned || ($text->getReplyToMessage() && $text->getReplyToMessage()->getFrom()->getUsername() === $botUsername)) {
+        if ($botMentioned || $isReplyToBot) {
             $reply = $this->generateGroupReply($text);
             $this->telegram->sendMessage([
                 'chat_id' => $chatId,
@@ -230,6 +235,7 @@ class TelegramController extends Controller
         // Return default reply if no keywords match
         return $defaultReply;
     }
+
 
     private function handleChannel($chatId, $text)
     {
