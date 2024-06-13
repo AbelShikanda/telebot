@@ -83,8 +83,8 @@ jobs:
         env:
           GITHUB_SHA: ${{ github.sha }}
           SOURCE_ASSET_DIR: /home/printsh1/print.printshopeld/release/${{github.sha}}/public/assets
-          SOURCE_CSS_DIR: /home/printsh1/print.printshopeld/release/${{github.sha}}/public/assets
-          SOURCE_JS_DIR: /home/printsh1/print.printshopeld/release/${{github.sha}}/public/assets
+          SOURCE_CSS_DIR: /home/printsh1/print.printshopeld/release/${{github.sha}}/public/css
+          SOURCE_JS_DIR: /home/printsh1/print.printshopeld/release/${{github.sha}}/public/js
           DEST_ASSET_DIR: /home/printsh1/print.printshopeld.com/phptelebot/public/assets
           DEST_CSS_DIR: /home/printsh1/print.printshopeld.com/phptelebot/public/css
           DEST_JS_DIR: /home/printsh1/print.printshopeld.com/phptelebot/public/js

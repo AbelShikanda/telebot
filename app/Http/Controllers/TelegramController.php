@@ -219,22 +219,19 @@ class TelegramController extends Controller
         // }
     // }
 
-    private function handleGroupChat($chatId, $message)
+    private function handleGroupChat($chatId, $text)
     {
         // Get bot's username and ID
         $bot = $this->telegram->getMe();
         $botUsername = $bot->getUsername();
         $botId = $bot->getId();
 
-        // Extract text from the message
-        $text = $message->getText();
-
         // Check if the bot is mentioned in the message
         $botMentioned = strpos($text, '@' . $botUsername) !== false;
 
         // Check if the message is a reply to a bot's message
-        $isReplyToBot = $message->has('reply_to_message') &&
-            $message->getReplyToMessage()->getFrom()->getId() === $botId;
+        $isReplyToBot = $text->has('reply_to_message') &&
+            $text->getReplyToMessage()->getFrom()->getId() === $botId;
 
         // If bot is mentioned or the message is a reply to a bot's message
         if ($botMentioned || $isReplyToBot) {
