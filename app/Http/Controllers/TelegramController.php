@@ -120,7 +120,7 @@ class TelegramController extends Controller
                     break;
                 case 'group':
                 case 'supergroup':
-                    $this->handleGroupChat($chatId, $text);
+                    $this->handleGroupChat($chatId, $text, $message);
                     break;
                 case 'channel':
                     $this->handleChannel($chatId, $text);
@@ -205,37 +205,40 @@ class TelegramController extends Controller
     //         ]);
     //     }
 
-        // // Get bot's username
-        // $bot = $this->telegram->getMe();
-        // $botUsername = $bot->getUsername();
+    // // Get bot's username
+    // $bot = $this->telegram->getMe();
+    // $botUsername = $bot->getUsername();
 
-        // // Check if the bot is mentioned in the message
-        // if (strpos($text, '@' . $botUsername) !== false) {
-        //     $reply = "This is a group chat. You said: " . $text;
-        //     $this->telegram->sendMessage([
-        //         'chat_id' => $chatId,
-        //         'text' => $reply
-        //     ]);
-        // }
+    // // Check if the bot is mentioned in the message
+    // if (strpos($text, '@' . $botUsername) !== false) {
+    //     $reply = "This is a group chat. You said: " . $text;
+    //     $this->telegram->sendMessage([
+    //         'chat_id' => $chatId,
+    //         'text' => $reply
+    //     ]);
+    // }
     // }
 
-    private function handleGroupChat($chatId, $text)
+    private function handleGroupChat($chatId, $text, $message)
     {
-        // Get bot's username and ID
+        /// Get bot's username and ID
         $bot = $this->telegram->getMe();
         $botUsername = $bot->getUsername();
         $botId = $bot->getId();
+
+        // Extract text from the message
+        $text = $message->getText();
 
         // Check if the bot is mentioned in the message
         $botMentioned = strpos($text, '@' . $botUsername) !== false;
 
         // Check if the message is a reply to a bot's message
-        $isReplyToBot = $text->has('reply_to_message') &&
-            $text->getReplyToMessage()->getFrom()->getId() === $botId;
+        $replyToMessage = $message->getReplyToMessage();
+        $isReplyToBot = $replyToMessage && $replyToMessage->getFrom()->getId() === $botId;
 
         // If bot is mentioned or the message is a reply to a bot's message
         if ($botMentioned || $isReplyToBot) {
-            $reply = $this->generateGroupReply($text);
+            $reply = "This is a group chat. You said: " . $text;
             $this->telegram->sendMessage([
                 'chat_id' => $chatId,
                 'text' => $reply
@@ -243,29 +246,29 @@ class TelegramController extends Controller
         }
     }
 
-    private function generateGroupReply($text)
-    {
-        // Define keywords and responses
-        $keywords = [
-            'hello' => 'Hello! How can I help you today?',
-            'help' => 'Sure! What do you need help with?',
-            'bye' => 'Goodbye! Have a nice day!',
-            // Add more keywords and responses as needed
-        ];
+    // private function generateGroupReply($text)
+    // {
+    //     // Define keywords and responses
+    //     $keywords = [
+    //         'hello' => 'Hello! How can I help you today?',
+    //         'help' => 'Sure! What do you need help with?',
+    //         'bye' => 'Goodbye! Have a nice day!',
+    //         // Add more keywords and responses as needed
+    //     ];
 
-        // Default reply if no keyword is matched
-        $defaultReply = "I didn't understand that. Can you please be more specific?";
+    //     // Default reply if no keyword is matched
+    //     $defaultReply = "I didn't understand that. Can you please be more specific?";
 
-        // Check for keywords in the text
-        foreach ($keywords as $keyword => $response) {
-            if (strpos(strtolower($text), $keyword) !== false) {
-                return $response;
-            }
-        }
+    //     // Check for keywords in the text
+    //     foreach ($keywords as $keyword => $response) {
+    //         if (strpos(strtolower($text), $keyword) !== false) {
+    //             return $response;
+    //         }
+    //     }
 
-        // Return default reply if no keywords match
-        return $defaultReply;
-    }
+    //     // Return default reply if no keywords match
+    //     return $defaultReply;
+    // }
 
     private function handleChannel($chatId, $text)
     {
