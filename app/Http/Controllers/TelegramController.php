@@ -183,21 +183,52 @@ class TelegramController extends Controller
         // Get bot's username
         $bot = $this->telegram->getMe();
         $botUsername = $bot->getUsername();
+        $text = $text->getText();
+        $entities = $text->getEntities();
 
-        // Check if the bot is mentioned in the message
-        if (strpos($text, '@' . $botUsername) !== false) {
-            $reply = "This is a group chat. You said: " . $text;
+        // Check if the bot is mentioned in the message entities
+        $botMentioned = false;
+        if ($entities) {
+            foreach ($entities as $entity) {
+                if ($entity['type'] === 'mention' && substr($text, $entity['offset'], $entity['length']) === '@' . $botUsername) {
+                    $botMentioned = true;
+                    break;
+                }
+            }
+        }
+
+        // If bot is mentioned or the message is a reply to a bot's message
+        if ($botMentioned || ($text->getReplyToMessage() && $text->getReplyToMessage()->getFrom()->getUsername() === $botUsername)) {
+            $reply = $this->generateGroupReply($text);
             $this->telegram->sendMessage([
                 'chat_id' => $chatId,
                 'text' => $reply
             ]);
         }
+    }
 
-        // $reply = "This is a group chat. You said: " . $text;
-        // $this->telegram->sendMessage([
-        //     'chat_id' => $chatId,
-        //     'text' => $reply
-        // ]);
+    private function generateGroupReply($text)
+    {
+        // Define keywords and responses
+        $keywords = [
+            'hello' => 'Hello! How can I help you today?',
+            'help' => 'Sure! What do you need help with?',
+            'bye' => 'Goodbye! Have a nice day!',
+            // Add more keywords and responses as needed
+        ];
+
+        // Default reply if no keyword is matched
+        $defaultReply = "I didn't understand that. Can you please be more specific?";
+
+        // Check for keywords in the text
+        foreach ($keywords as $keyword => $response) {
+            if (strpos(strtolower($text), $keyword) !== false) {
+                return $response;
+            }
+        }
+
+        // Return default reply if no keywords match
+        return $defaultReply;
     }
 
     private function handleChannel($chatId, $text)
