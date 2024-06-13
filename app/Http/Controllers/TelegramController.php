@@ -238,7 +238,7 @@ class TelegramController extends Controller
 
         // If bot is mentioned or the message is a reply to a bot's message
         if ($botMentioned || $isReplyToBot) {
-            $reply = "This is a group chat. You said: " . $text;
+            $reply = $this->generateGroupReply($text);
             $this->telegram->sendMessage([
                 'chat_id' => $chatId,
                 'text' => $reply
@@ -246,29 +246,27 @@ class TelegramController extends Controller
         }
     }
 
-    // private function generateGroupReply($text)
-    // {
-    //     // Define keywords and responses
-    //     $keywords = [
-    //         'hello' => 'Hello! How can I help you today?',
-    //         'help' => 'Sure! What do you need help with?',
-    //         'bye' => 'Goodbye! Have a nice day!',
-    //         // Add more keywords and responses as needed
-    //     ];
+    private function generateGroupReply($text)
+    {
+        $replies = Replies::all();
 
-    //     // Default reply if no keyword is matched
-    //     $defaultReply = "I didn't understand that. Can you please be more specific?";
+        $normalizedText = strtolower(trim($text));
 
-    //     // Check for keywords in the text
-    //     foreach ($keywords as $keyword => $response) {
-    //         if (strpos(strtolower($text), $keyword) !== false) {
-    //             return $response;
-    //         }
-    //     }
+        foreach ($replies as $dbReply) {
+            $keyword = strtolower($dbReply->keyword);
+            $response = $dbReply->response;
 
-    //     // Return default reply if no keywords match
-    //     return $defaultReply;
-    // }
+            if (strpos($normalizedText, $keyword) !== false) {
+                return $response;
+            }
+        }
+        
+        // Default reply if no keyword is matched
+        $defaultReply = "I didn't understand that. Can you please be more specific?";
+
+        // Return default reply if no keywords match
+        return $defaultReply;
+    }
 
     private function handleChannel($chatId, $text)
     {
