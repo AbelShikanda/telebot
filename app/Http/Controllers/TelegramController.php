@@ -184,8 +184,9 @@ class TelegramController extends Controller
         $bot = $this->telegram->getMe();
         $botUsername = $bot->getUsername();
 
-        // Ensure $text is an object and extract text and entities
-        $entities = $text->getEntities();
+        // Ensure $text is an object and extract text and entities// Ensure $message is an object and extract text and entities
+        $text = isset($message['text']) ? $message['text'] : '';
+        $entities = isset($message['entities']) ? $message['entities'] : [];
 
         // Check if the bot is mentioned in the text entities
         $botMentioned = false;
