@@ -157,7 +157,7 @@ class TelegramController extends Controller
     private function handlePrivateChat($chatId, $text)
     {
         $replies = Replies::all();
-        
+
         $normalizedText = strtolower(trim($text));
 
         $reply = "I did not understand your message please try asking one question at a time :)";
@@ -171,7 +171,7 @@ class TelegramController extends Controller
                 break;
             }
         }
-        
+
         $this->telegram->sendMessage([
             'chat_id' => $chatId,
             'text' => $reply
@@ -180,11 +180,24 @@ class TelegramController extends Controller
 
     private function handleGroupChat($chatId, $text)
     {
-        $reply = "This is a group chat. You said: " . $text;
-        $this->telegram->sendMessage([
-            'chat_id' => $chatId,
-            'text' => $reply
-        ]);
+        // Get bot's username
+        $bot = $this->telegram->getMe();
+        $botUsername = $bot->getUsername();
+
+        // Check if the bot is mentioned in the message
+        if (strpos($text, '@' . $botUsername) !== false) {
+            $reply = "This is a group chat. You said: " . $text;
+            $this->telegram->sendMessage([
+                'chat_id' => $chatId,
+                'text' => $reply
+            ]);
+        }
+
+        // $reply = "This is a group chat. You said: " . $text;
+        // $this->telegram->sendMessage([
+        //     'chat_id' => $chatId,
+        //     'text' => $reply
+        // ]);
     }
 
     private function handleChannel($chatId, $text)
