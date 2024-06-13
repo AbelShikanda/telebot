@@ -180,40 +180,24 @@ class TelegramController extends Controller
 
     private function handleGroupChat($chatId, $text)
     {
-        // Get bot's username
-        $bot = $this->telegram->getMe();
-        $botUsername = $bot->getUsername();
-
-        // Log bot username for debugging
-        file_put_contents('bot.log', "Bot username: " . $botUsername . PHP_EOL, FILE_APPEND);
-
-        // Ensure $message is an array and extract text and entities
+        // Ensure $message is an array and extract text
         $text = isset($message['text']) ? $message['text'] : '';
 
-        // Log the message text for debugging
-        file_put_contents('message.log', "Message text: " . $text . PHP_EOL, FILE_APPEND);
-
-        // Check if the bot is mentioned in the message
-        $botMentioned = strpos($text, '@' . $botUsername) !== false;
-
         // Check if the message is a reply to a bot's message
-        $isReplyToBot = isset($message['reply_to_message']) &&
+        $isReplyToBotMessage = isset($message['reply_to_message']) &&
             isset($message['reply_to_message']['from']) &&
-            $message['reply_to_message']['from']['username'] === $botUsername;
+            $message['reply_to_message']['from']['is_bot'] &&
+            $message['reply_to_message']['from']['id'] === $this->telegram->getMe()->getId();
 
-        // Log the check results for debugging
-        file_put_contents('checks.log', "Bot Mentioned: " . ($botMentioned ? 'yes' : 'no') . PHP_EOL, FILE_APPEND);
-        file_put_contents('checks.log', "Is Reply To Bot: " . ($isReplyToBot ? 'yes' : 'no') . PHP_EOL, FILE_APPEND);
-
-        // If bot is mentioned or the message is a reply to a bot's message
-        if ($botMentioned || $isReplyToBot) {
+        // If the message is a reply to the bot's message
+        if ($isReplyToBotMessage) {
             $reply = "This is a group chat. You said: " . $text;
             $this->telegram->sendMessage([
                 'chat_id' => $chatId,
                 'text' => $reply
             ]);
         }
-        
+
         // // Get bot's username
         // $bot = $this->telegram->getMe();
         // $botUsername = $bot->getUsername();
