@@ -180,62 +180,18 @@ class TelegramController extends Controller
 
     private function handleGroupChat($chatId, $text)
     {
-        // Ensure $message is an array and extract text
-        $text = isset($message['text']) ? $message['text'] : '';
+        // Get bot's username
+        $bot = $this->telegram->getMe();
+        $botUsername = $bot->getUsername();
 
-        // Check if the message is a reply to a bot's message
-        $isReplyToBotMessage = isset($message['reply_to_message']) &&
-            isset($message['reply_to_message']['from']) &&
-            $message['reply_to_message']['from']['is_bot'] &&
-            $message['reply_to_message']['from']['id'] === $this->telegram->getMe()->getId();
-
-        // If the message is a reply to the bot's message
-        if ($isReplyToBotMessage) {
+        // Check if the bot is mentioned in the message
+        if (strpos($text, '@' . $botUsername) !== false) {
             $reply = "This is a group chat. You said: " . $text;
             $this->telegram->sendMessage([
                 'chat_id' => $chatId,
                 'text' => $reply
             ]);
         }
-
-        // // Get bot's username
-        // $bot = $this->telegram->getMe();
-        // $botUsername = $bot->getUsername();
-
-        // // Ensure $message is an object and extract text and entities
-        // $text = isset($message['text']) ? $message['text'] : '';
-
-        // // Check if the bot is mentioned in the message
-        // $botMentioned = strpos($text, '@' . $botUsername) !== false;
-
-        // // Check if the message is a reply to a bot's message
-        // $isReplyToBot = isset($message['reply_to_message']) &&
-        //     isset($message['reply_to_message']['from']) &&
-        //     $message['reply_to_message']['from']['username'] === $botUsername;
-
-        // // If bot is mentioned or the message is a reply to a bot's message
-        // if ($botMentioned || $isReplyToBot) {
-        //     $reply = "This is a group chat. You said: " . $text;
-        //     $this->telegram->sendMessage([
-        //         'chat_id' => $chatId,
-        //         'text' => $reply
-        //     ]);
-        // }
-
-        // // Check if the bot is mentioned in the message
-        // if (strpos($text, '@' . $botUsername) !== false) {
-        //     $reply = "This is a group chat. You said: " . $text;
-        //     $this->telegram->sendMessage([
-        //         'chat_id' => $chatId,
-        //         'text' => $reply
-        //     ]);
-        // }
-
-        // $reply = "This is a group chat. You said: " . $text;
-        // $this->telegram->sendMessage([
-        //     'chat_id' => $chatId,
-        //     'text' => $reply
-        // ]);
     }
 
     private function handleChannel($chatId, $text)
