@@ -188,19 +188,18 @@ class TelegramController extends Controller
         $text = isset($message['text']) ? $message['text'] : '';
         $entities = isset($message['entities']) ? $message['entities'] : [];
 
-        // Check if the bot is mentioned in the text entities
+        // Check if the bot is mentioned in the message entities
         $botMentioned = false;
-        if ($entities) {
-            foreach ($entities as $entity) {
-                if ($entity['type'] === 'mention' && substr($text, $entity['offset'], $entity['length']) === '@' . $botUsername) {
-                    $botMentioned = true;
-                    break;
-                }
+        foreach ($entities as $entity) {
+            if ($entity['type'] === 'mention' && substr($text, $entity['offset'], $entity['length']) === '@' . $botUsername) {
+                $botMentioned = true;
+                break;
             }
         }
 
-        // Check if the text is a reply to a bot's text
-        $isReplyToBot = $text->getReplyToMessage() && $text->getReplyToMessage()->getFrom()->getUsername() === $botUsername;
+        // Check if the message is a reply to a bot's message
+        $isReplyToBot = isset($message['reply_to_message']) && isset($message['reply_to_message']['from']) &&
+                        $message['reply_to_message']['from']['username'] === $botUsername;
 
         // If bot is mentioned or the message is a reply to a bot's message
         if ($botMentioned || $isReplyToBot) {
