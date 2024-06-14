@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\GroupRepliesController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\RepliesController;
 use Illuminate\Support\Facades\Route;
@@ -41,6 +42,8 @@ Route::get('/telegram/channel', [TelegramController::class, 'handleChannel'])->n
 Route::get('/telegram/unknown/chat/type', [TelegramController::class, 'handleUnknownChatType'])->name('handleUnknownChatType');
 // //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 Route::resource('replies', RepliesController::class);
+// //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Route::resource('groupreplies', GroupRepliesController::class);
 // //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 // Route::get('sendPoll', [App\Http\Controllers\TelegramController::class, 'sendPoll']);
 // //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++

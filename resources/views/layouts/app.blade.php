@@ -87,12 +87,12 @@
     <nav class="navbar navbar-expand-lg bg-secondary text-uppercase fixed-top" id="mainNav">
         <div class="container">
             <a class="navbar-brand" href="/">Printshop Telebot</a>
-            <div class=" navbar-collapse" id="navbarResponsive">
+            <div class="navbar-collapse" id="navbarResponsive">
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-3 px-0 px-lg-3 rounded"
-                            href="{{ route('replies.index') }}">replies</a></li>
+                            href="{{ route('replies.index') }}">Replies</a></li>
                     <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-3 px-0 px-lg-3 rounded"
-                            href="#about">About</a></li>
+                            href="{{ route('groupreplies.index') }}">Group Replies</a></li>
                     <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-3 px-0 px-lg-3 rounded"
                             href="#contact">Contact</a></li>
                 </ul>

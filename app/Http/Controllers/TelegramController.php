@@ -3,25 +3,23 @@
 namespace App\Http\Controllers;
 
 use App\Models\Replies;
-use App\Models\Telegram;
+use App\Models\GroupReplies;
+use App\Services\UserService;
 use Illuminate\Http\Request;
 use Telegram\Bot\Api;
-use Carbon\Carbon;
-use coinmarketcap\api\CoinMarketCap;
-use Exception;
+use Illuminate\Support\Facades\DB;
 
 class TelegramController extends Controller
 {
 
     protected $telegram;
     protected $chat_id;
-    protected $username;
-    protected $text;
-    private $warnings = []; // In-memory storage for warnings; replace with database in production
+    protected $userService;
 
     public function __construct()
     {
         $this->telegram = new Api(env('TELEGRAM_BOT_TOKEN'));
+        $this->userService = new UserService();
     }
 
     public function getMe()
@@ -38,45 +36,6 @@ class TelegramController extends Controller
         return $response == true ? redirect()->back() : dd($response);
     }
 
-    public function handleRequest(Request $request)
-    {
-        $this->chat_id = $request['message']['chat']['id'];
-        $this->username = $request['message']['from']['username'];
-        $this->text = $request['message']['text'];
-
-        switch ($this->text) {
-            case '/start':
-            case '/menu':
-                $this->showMenu();
-                break;
-            case '/getGlobal':
-                $this->showGlobal();
-                break;
-            case '/getTicker':
-                $this->getTicker();
-                break;
-            case '/getCurrencyTicker':
-                $this->getCurrencyTicker();
-                break;
-            default:
-                $this->checkDatabase();
-        }
-    }
-
-    public function showMenu($info = null)
-    {
-        $message = '';
-        if ($info) {
-            $message .= $info . chr(10);
-        }
-        $message .= '/menu' . chr(10);
-        $message .= '/getGlobal' . chr(10);
-        $message .= '/getTicker' . chr(10);
-        $message .= '/getCurrencyTicker' . chr(10);
-
-        $this->sendMessage($message);
-    }
-
     protected function sendMessage($message, $parse_html = false)
     {
         $data = [
@@ -87,17 +46,6 @@ class TelegramController extends Controller
         if ($parse_html) $data['parse_mode'] = 'HTML';
 
         $this->telegram->sendMessage($data);
-    }
-
-    public function handle()
-    {
-        $update = $this->getUpdate();
-
-        // Handle the command
-        $chatId = $update->getMessage()->getChat()->getId();
-        $text = "Hello, this is my custom command!";
-
-        $this->replyWithMessage(compact('chatId', 'text'));
     }
 
     public function handleWebhook(Request $request)
@@ -114,6 +62,39 @@ class TelegramController extends Controller
             $chatId = $chat->getId();
             $chatType = $chat->getType();
             $text = $message->getText();
+            $user = $message->getFrom();
+            $userId = $user->getId();
+            $username = $user->getUsername();
+            $firstName = $user->getFirstName();
+            $lastName = $user->getLastName();
+            $isAdmin = $this->checkIfAdmin($chatId, $userId);
+            $media = $this->hasMedia($message); // Indicates if the message contains media (photo, video, etc.)
+            $file = $this->getFileId($message); // Unique identifier for files (if applicable)
+            $mediType = $this->getMediaType($message); // Type of media (photo, video, etc.)
+
+
+            $userData = [
+                'message' => $message,
+                'message_id' => $message->getMessageId(),
+                'chat' => $chat,
+                'chat_id' => $chatId,
+                'chat_type' => $chatType,
+                'text' => $text,
+                'user' => $user,
+                'user_id' => $userId,
+                'username' => $username,
+                'first_name' => $firstName,
+                'last_name' => $lastName,
+                'joined_at' => now(), // Assuming this is the first interaction
+                'message_count' => 1, // Assuming initial message count is 1
+                'warning_count' => 0, // Assuming initial message count is 1
+                'is_admin' => $isAdmin, // Modify as needed
+                'has_media' => $media, // Indicates if the message contains media (photo, video, etc.)
+                'file_id' => $file, // Unique identifier for files (if applicable)
+                'media_type' => $mediType, // Type of media (photo, video, etc.)
+            ];
+
+            $this->userService->logUser($userData);
 
             switch ($chatType) {
                 case 'private':
@@ -155,6 +136,64 @@ class TelegramController extends Controller
         return response()->json(['status' => 'success']);
     }
 
+    private function checkIfAdmin($chatId, $userId)
+    {
+        $admins = $this->telegram->getChatAdministrators(['chat_id' => $chatId]);
+        foreach ($admins as $admin) {
+            if ($admin->getUser()->getId() == $userId) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private function getMediaType($message)
+    {
+        if ($message->getPhoto()) {
+            return 'photo';
+        } elseif ($message->getVideo()) {
+            return 'video';
+        } elseif ($message->getAudio()) {
+            return 'audio';
+        } elseif ($message->getVoice()) {
+            return 'voice';
+        } elseif ($message->getDocument()) {
+            return 'document';
+        } elseif ($message->getAnimation()) {
+            return 'animation';
+        } elseif ($message->getSticker()) {
+            return 'sticker';
+        } else {
+            return null;
+        }
+    }
+
+    private function getFileId($message)
+    {
+        if ($message->getPhoto()) {
+            return $message->getPhoto()[0]->getFileId();
+        } elseif ($message->getVideo()) {
+            return $message->getVideo()->getFileId();
+        } elseif ($message->getAudio()) {
+            return $message->getAudio()->getFileId();
+        } elseif ($message->getVoice()) {
+            return $message->getVoice()->getFileId();
+        } elseif ($message->getDocument()) {
+            return $message->getDocument()->getFileId();
+        } elseif ($message->getAnimation()) {
+            return $message->getAnimation()->getFileId();
+        } elseif ($message->getSticker()) {
+            return $message->getSticker()->getFileId();
+        } else {
+            return null;
+        }
+    }
+
+    private function hasMedia($message)
+    {
+        return $message->getPhoto() || $message->getVideo() || $message->getAudio() || $message->getVoice() || $message->getDocument() || $message->getAnimation() || $message->getSticker();
+    }
+
     private function handlePrivateChat($chatId, $text)
     {
         $replies = Replies::all();
@@ -178,47 +217,6 @@ class TelegramController extends Controller
             'text' => $reply
         ]);
     }
-
-    // private function handleGroupChat($chatId, $text)
-    // {
-    //     // Get bot's username
-    //     $bot = $this->telegram->getMe();
-    //     $botUsername = $bot->getUsername();
-    //     $botId = $bot->getId();
-
-    //     // Extract text from the message
-    //     $text = isset($message['text']) ? $message['text'] : '';
-
-    //     // Check if the bot is mentioned in the message
-    //     $botMentioned = strpos($text, '@' . $botUsername) !== false;
-
-    //     // Check if the message is a reply to a bot's message
-    //     $isReplyToBot = isset($message['reply_to_message']) &&
-    //         isset($message['reply_to_message']['from']) &&
-    //         $message['reply_to_message']['from']['id'] === $botId;
-
-    //     // If bot is mentioned or the message is a reply to a bot's message
-    //     if ($botMentioned || $isReplyToBot) {
-    //         $reply = $this->generateGroupReply($text);
-    //         $this->telegram->sendMessage([
-    //             'chat_id' => $chatId,
-    //             'text' => $reply
-    //         ]);
-    //     }
-
-    // // Get bot's username
-    // $bot = $this->telegram->getMe();
-    // $botUsername = $bot->getUsername();
-
-    // // Check if the bot is mentioned in the message
-    // if (strpos($text, '@' . $botUsername) !== false) {
-    //     $reply = "This is a group chat. You said: " . $text;
-    //     $this->telegram->sendMessage([
-    //         'chat_id' => $chatId,
-    //         'text' => $reply
-    //     ]);
-    // }
-    // }
 
     private function handleGroupChat($chatId, $text, $message)
     {
@@ -272,21 +270,37 @@ class TelegramController extends Controller
     {
         $warningThreshold = 3; // Number of warnings before action is taken
 
-        // Initialize warnings for the user if not already done
-        if (!isset($this->warnings[$chatId])) {
-            $this->warnings[$chatId] = [];
-        }
-        if (!isset($this->warnings[$chatId][$userId])) {
-            $this->warnings[$chatId][$userId] = 0;
-        }
+        $warning = DB::table('telegram_users')
+            ->where('chat_id', $chatId)
+            ->where('user_id', $userId)
+            ->first();
 
-        // Increment the warning count
-        $this->warnings[$chatId][$userId]++;
+        if ($warning) {
+            // Increment the warning count
+            $warningCount = $warning->warning_count + 1;
+            DB::table('telegram_users')
+                ->where('chat_id', $chatId)
+                ->where('user_id', $userId)
+                ->update([
+                    'warning_count' => $warningCount,
+                    'last_warning_at' => now()
+                ]);
+        } else {
+            // Initialize the warning count for the user
+            $warningCount = 1;
+            DB::table('telegram_users')
+            ->where('chat_id', $chatId)
+            ->where('user_id', $userId)
+            ->update([
+                'warning_count' => $warningCount,
+                'last_warning_at' => now()
+            ]);
+        }
 
         // Send a warning message to the user
         $this->telegram->sendMessage([
             'chat_id' => $chatId,
-            'text' => "Warning: Unwanted content detected. This is warning #" . $this->warnings[$chatId][$userId]
+            'text' => "Warning: Unwanted content detected. This is warning #" . $warningCount
         ]);
 
         // Delete the unwanted message
@@ -296,21 +310,21 @@ class TelegramController extends Controller
         ]);
 
         // If the warning count exceeds the threshold, ban the user
-        if ($this->warnings[$chatId][$userId] >= $warningThreshold) {
-            // Ban the user
-            $this->telegram->kickChatMember([
-                'chat_id' => $chatId,
-                'user_id' => $userId
-            ]);
+        if ($warningCount >= $warningThreshold) {
+            // Restrict the user from sending messages
+            $this->restrictUser($chatId, $userId);
 
             // Reset the warning count after taking action
-            unset($this->warnings[$chatId][$userId]);
+            DB::table('telegram_users')
+                ->where('chat_id', $chatId)
+                ->where('user_id', $userId)
+                ->update(['warning_count' => 0]);
         }
     }
 
     private function generateGroupReply($text)
     {
-        $replies = Replies::all();
+        $replies = GroupReplies::all();
 
         $normalizedText = strtolower(trim($text));
 
@@ -328,6 +342,30 @@ class TelegramController extends Controller
 
         // Return default reply if no keywords match
         return $defaultReply;
+    }
+
+    private function restrictUser($chatId, $userId, $untilDate = null)
+    {
+        // If no untilDate is provided, set it to one month from now
+        if (is_null($untilDate)) {
+            $untilDate = now()->addMonth()->timestamp; // Add one month to the current date
+        }
+
+        $this->telegram->restrictChatMember([
+            'chat_id' => $chatId,
+            'user_id' => $userId,
+            'permissions' => [
+                'can_send_messages' => false,
+                'can_send_media_messages' => false,
+                'can_send_polls' => false,
+                'can_send_other_messages' => false,
+                'can_add_web_page_previews' => false,
+                'can_change_info' => false,
+                'can_invite_users' => false,
+                'can_pin_messages' => false
+            ],
+            'until_date' => $untilDate // Optional: specify a date until the restriction should be applied
+        ]);
     }
 
     private function handleChannel($chatId, $text)
