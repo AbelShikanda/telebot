@@ -23,13 +23,8 @@ class CreateTelegramMessagesTable extends Migration
             $table->text('text')->nullable();
             $table->text('caption')->nullable(); // Caption for media (if applicable)
             $table->string('media_type')->nullable(); // Type of media (photo, video, etc.)
-            $table->string('file_id')->nullable(); // Unique identifier for files (if applicable)
-            $table->boolean('is_forwarded')->default(false); // Indicates if the message is forwarded
             $table->boolean('is_reply')->default(false); // Indicates if the message is a reply
             $table->bigInteger('reply_to_message_id')->unsigned()->nullable(); // Message ID to which this message replies
-            $table->boolean('has_media')->default(false); // Indicates if the message contains media (photo, video, etc.)
-            $table->boolean('has_document')->default(false); // Indicates if the message contains a document
-            $table->boolean('has_location')->default(false); // Indicates if the message contains a location
             $table->timestamps();
         });
     }
