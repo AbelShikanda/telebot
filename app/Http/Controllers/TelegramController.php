@@ -17,6 +17,7 @@ class TelegramController extends Controller
     protected $chat_id;
     protected $username;
     protected $text;
+    private $warnings = []; // In-memory storage for warnings; replace with database in production
 
     public function __construct()
     {
@@ -229,6 +230,27 @@ class TelegramController extends Controller
         // Extract text from the message
         $text = $message->getText();
 
+        // Define unwanted content keywords
+        $unwantedKeywords = ['spam', 'unwanted', 'badword']; // Add your own keywords
+
+        // Check if the message contains unwanted content
+        $containsUnwantedContent = false;
+        foreach ($unwantedKeywords as $keyword) {
+            if (strpos(strtolower($text), $keyword) !== false) {
+                $containsUnwantedContent = true;
+                break;
+            }
+        }
+
+        // Get user ID
+        $userId = $message->getFrom()->getId();
+
+        // If the message contains unwanted content, issue a warning
+        if ($containsUnwantedContent) {
+            $this->handleUnwantedContent($chatId, $userId, $message);
+            return; // Exit after handling unwanted content
+        }
+
         // Check if the bot is mentioned in the message
         $botMentioned = strpos($text, '@' . $botUsername) !== false;
 
@@ -246,6 +268,46 @@ class TelegramController extends Controller
         }
     }
 
+    private function handleUnwantedContent($chatId, $userId, $message)
+    {
+        $warningThreshold = 3; // Number of warnings before action is taken
+
+        // Initialize warnings for the user if not already done
+        if (!isset($this->warnings[$chatId])) {
+            $this->warnings[$chatId] = [];
+        }
+        if (!isset($this->warnings[$chatId][$userId])) {
+            $this->warnings[$chatId][$userId] = 0;
+        }
+
+        // Increment the warning count
+        $this->warnings[$chatId][$userId]++;
+
+        // Send a warning message to the user
+        $this->telegram->sendMessage([
+            'chat_id' => $chatId,
+            'text' => "Warning: Unwanted content detected. This is warning #" . $this->warnings[$chatId][$userId]
+        ]);
+
+        // Delete the unwanted message
+        $this->telegram->deleteMessage([
+            'chat_id' => $chatId,
+            'message_id' => $message->getMessageId()
+        ]);
+
+        // If the warning count exceeds the threshold, ban the user
+        if ($this->warnings[$chatId][$userId] >= $warningThreshold) {
+            // Ban the user
+            $this->telegram->kickChatMember([
+                'chat_id' => $chatId,
+                'user_id' => $userId
+            ]);
+
+            // Reset the warning count after taking action
+            unset($this->warnings[$chatId][$userId]);
+        }
+    }
+
     private function generateGroupReply($text)
     {
         $replies = Replies::all();
@@ -260,7 +322,7 @@ class TelegramController extends Controller
                 return $response;
             }
         }
-        
+
         // Default reply if no keyword is matched
         $defaultReply = "I didn't understand that. Can you please be more specific?";
 
