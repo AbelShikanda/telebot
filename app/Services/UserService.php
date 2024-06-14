@@ -9,7 +9,8 @@ class UserService
     public function logUser($userData)
     {
         // Log chat
-        $this->logChat($userData['chat_id'], $userData['chat_type']);
+        $chatId = $this->logChat($userData['chat_id'], $userData['chat_type']);
+        $userData['chat_id'] = $chatId; // Use the ID of the chat
 
         // Log user
         $this->logUserDetails($userData);
@@ -23,17 +24,20 @@ class UserService
         DB::table('telegram_chats')->updateOrInsert(
             ['chat_id' => $chatId],
             [
-                'type' => $chatType, 
+                'type' => $chatType,
                 'last_update' => now()
             ]
         );
+    
+        // Retrieve the ID of the chat
+        return DB::table('telegram_chats')->where('chat_id', $chatId)->value('id');
     }
 
     private function logUserDetails($userData)
     {
         DB::table('telegram_users')->updateOrInsert(
             [
-                'chat_id' => $userData['chat_id'], 
+                'chat_id' => $userData['chat_id'],
                 'user_id' => $userData['user_id'],
             ],
             [
@@ -70,4 +74,3 @@ class UserService
         ]);
     }
 }
-
