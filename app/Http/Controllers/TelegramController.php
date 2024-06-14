@@ -15,6 +15,8 @@ class TelegramController extends Controller
     protected $telegram;
     protected $chat_id;
     protected $userService;
+    protected $username;
+    protected $text;
 
     public function __construct()
     {
@@ -36,6 +38,45 @@ class TelegramController extends Controller
         return $response == true ? redirect()->back() : dd($response);
     }
 
+    public function handleRequest(Request $request)
+    {
+        $this->chat_id = $request['message']['chat']['id'];
+        $this->username = $request['message']['from']['username'];
+        $this->text = $request['message']['text'];
+
+        switch ($this->text) {
+            case '/start':
+            case '/menu':
+                $this->showMenu();
+                break;
+            case '/getGlobal':
+                $this->showGlobal();
+                break;
+            case '/getTicker':
+                $this->getTicker();
+                break;
+            case '/getCurrencyTicker':
+                $this->getCurrencyTicker();
+                break;
+            default:
+                $this->checkDatabase();
+        }
+    }
+
+    public function showMenu($info = null)
+    {
+        $message = '';
+        if ($info) {
+            $message .= $info . chr(10);
+        }
+        $message .= '/menu' . chr(10);
+        $message .= '/getGlobal' . chr(10);
+        $message .= '/getTicker' . chr(10);
+        $message .= '/getCurrencyTicker' . chr(10);
+
+        $this->sendMessage($message);
+    }
+
     protected function sendMessage($message, $parse_html = false)
     {
         $data = [
@@ -46,6 +87,17 @@ class TelegramController extends Controller
         if ($parse_html) $data['parse_mode'] = 'HTML';
 
         $this->telegram->sendMessage($data);
+    }
+
+    public function handle()
+    {
+        $update = $this->getUpdate();
+
+        // Handle the command
+        $chatId = $update->getMessage()->getChat()->getId();
+        $text = "Hello, this is my custom command!";
+
+        $this->replyWithMessage(compact('chatId', 'text'));
     }
 
     public function handleWebhook(Request $request)
@@ -138,12 +190,22 @@ class TelegramController extends Controller
 
     private function checkIfAdmin($chatId, $userId)
     {
-        $admins = $this->telegram->getChatAdministrators(['chat_id' => $chatId]);
-        foreach ($admins as $admin) {
-            if ($admin->getUser()->getId() == $userId) {
-                return true;
+        // Get chat type
+        $chat = $this->telegram->getChat(['chat_id' => $chatId]);
+        $chatType = $chat->getType();
+
+        // Only check for admins if it's a group, supergroup, or channel
+        if (in_array($chatType, ['group', 'supergroup', 'channel'])) {
+            $administrators = $this->telegram->getChatAdministrators(['chat_id' => $chatId]);
+
+            foreach ($administrators as $admin) {
+                if ($admin->getUser()->getId() == $userId) {
+                    return true;
+                }
             }
         }
+
+        // Return false for private chats and if the user is not an admin
         return false;
     }
 
@@ -289,12 +351,12 @@ class TelegramController extends Controller
             // Initialize the warning count for the user
             $warningCount = 1;
             DB::table('telegram_users')
-            ->where('chat_id', $chatId)
-            ->where('user_id', $userId)
-            ->update([
-                'warning_count' => $warningCount,
-                'last_warning_at' => now()
-            ]);
+                ->where('chat_id', $chatId)
+                ->where('user_id', $userId)
+                ->update([
+                    'warning_count' => $warningCount,
+                    'last_warning_at' => now()
+                ]);
         }
 
         // Send a warning message to the user

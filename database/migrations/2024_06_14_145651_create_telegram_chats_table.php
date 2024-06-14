@@ -15,7 +15,7 @@ class CreateTelegramChatsTable extends Migration
     {
         Schema::create('telegram_chats', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->bigInteger('chat_id')->unsigned()->unique();
+            $table->bigInteger('chat_id')->unique();
             $table->string('type'); // 'private', 'group', 'supergroup', 'channel'
             $table->timestamp('last_update')->useCurrent();
             $table->timestamps();
