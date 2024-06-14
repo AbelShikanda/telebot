@@ -24,7 +24,7 @@ class UserService
             ['chat_id' => $chatId],
             [
                 'type' => $chatType, 
-                'updated_at' => now()
+                'last_update' => now()
             ]
         );
     }
@@ -43,9 +43,9 @@ class UserService
                 'warning_count' => $userData['warning_count'],
                 'last_warning_at' => $userData['last_warning_at'],
                 'joined_at' => $userData['joined_at'],
+                'last_warning_at' => now(),
                 'message_count' => DB::raw('message_count + 1'), // Increment message count
                 'is_admin' => $userData['is_admin'],
-                'updated_at' => now()
             ]
         );
     }

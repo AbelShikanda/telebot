@@ -17,7 +17,7 @@ class CreateTelegramChatsTable extends Migration
             $table->bigIncrements('id');
             $table->bigInteger('chat_id')->unsigned()->unique();
             $table->string('type'); // 'private', 'group', 'supergroup', 'channel'
-            $table->timestamps('updated_at');
+            $table->timestamps('last_update');
             $table->timestamps();
         });
     }
