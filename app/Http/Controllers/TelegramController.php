@@ -144,6 +144,7 @@ class TelegramController extends Controller
                 'has_media' => $media, // Indicates if the message contains media (photo, video, etc.)
                 'file_id' => $file, // Unique identifier for files (if applicable)
                 'media_type' => $mediType, // Type of media (photo, video, etc.)
+                'last_warning_at' => null, // Default to null
             ];
 
             $this->userService->logUser($userData);
