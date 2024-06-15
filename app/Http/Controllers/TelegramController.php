@@ -135,18 +135,28 @@ class TelegramController extends Controller
                     'message_count' => DB::raw('message_count + 1'), // Increment message count
                     'is_admin' => $isAdmin,
                     'updated_at' => now(),
-                
+
                 ]);
 
                 $chat = TelegramChats::where('user_id', $userId)->first();
-                $chat->Update([
-                    'type' => $chatType,
-                    'last_update' => now()
-                ]);
+                if ($chat) {
+                    $chat->update([
+                        'type' => $chatType,
+                        'last_update' => now()
+                    ]);
+                } else {
+                    // Create chat record if it does not exist
+                    $chat = TelegramChats::create([
+                        'chat_id' => $$chat->id,
+                        'user_id' => $user->id,
+                        'type' => $chatType,
+                        'last_update' => now()
+                    ]);
+                }
 
                 TelegramMessages::create([
                     'message_id' => $message->getMessageId(),
-                    'chat_id' => $chatId,
+                    'chat_id' => $$chat->id,
                     'user_id' => $user->id,
                     'text' => $text,
                     'caption' => $message->getCaption(), // Caption for media (if applicable)
@@ -165,7 +175,7 @@ class TelegramController extends Controller
                     'message_count' => 1, // Initialize message count
                     'is_admin' => $isAdmin,
                 ]);
-                
+
                 $chat = TelegramChats::Create([
                     'chat_id' => $chatId,
                     'user_id' => $user->id,
