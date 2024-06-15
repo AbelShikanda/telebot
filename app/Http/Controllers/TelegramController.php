@@ -151,7 +151,7 @@ class TelegramController extends Controller
                 // Create user record
                 $user = TelegramUsers::Create([
                     'user_id' => $userId,
-                    'chat_id' => $chatId,
+                    'chat_id' => $chat->id,
                     'username' => $user,
                     'first_name' => $firstName,
                     'last_name' => $lastName,
