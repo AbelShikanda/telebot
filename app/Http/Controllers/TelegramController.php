@@ -138,7 +138,7 @@ class TelegramController extends Controller
 
                 ]);
 
-                $chat = TelegramChats::where('user_id', $userId)->first();
+                $chat = TelegramChats::where('user_id', $user->id)->first();
                 if ($chat) {
                     $chat->update([
                         'type' => $chatType,
@@ -331,7 +331,7 @@ class TelegramController extends Controller
     {
         $warningThreshold = 3; // Number of warnings before action is taken
 
-        $user = TelegramUsers::where('user_id', $userId);
+        $user = TelegramUsers::where('user_id', $userId)->first();
 
         if ($user) {
             $user->warning_count += 1;
