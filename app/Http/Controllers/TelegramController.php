@@ -147,22 +147,30 @@ class TelegramController extends Controller
                 } else {
                     // Create chat record if it does not exist
                     $chat = TelegramChats::create([
-                        'chat_id' => $chat->id,
+                        'chat_id' => $chatId,
                         'user_id' => $user->id,
                         'type' => $chatType,
                         'last_update' => now()
                     ]);
                 }
 
-                TelegramMessages::create([
-                    'message_id' => $message->getMessageId(),
-                    'chat_id' => $chat->id,
-                    'user_id' => $user->id,
-                    'text' => $text,
-                    'caption' => $message->getCaption(), // Caption for media (if applicable)
-                    'is_reply' => $message->getReplyToMessage() ? true : false, // Indicates if the message is a reply
-                    'reply_to_message_id' => $message->getReplyToMessage() ? $message->getReplyToMessage()->getMessageId() : null, // Message ID to which this message replies
-                ]);
+                $existingMessage = TelegramMessages::where('message_id', $message->getMessageId())->first();
+                if ($existingMessage) {
+                    $existingMessage->update([
+                        'text' => $text,
+                        'updated_at' => now(),
+                    ]);
+                } else {
+                    TelegramMessages::create([
+                        'message_id' => $message->getMessageId(),
+                        'chat_id' => $chat->id,
+                        'user_id' => $user->id,
+                        'text' => $text,
+                        'caption' => $message->getCaption(), // Caption for media (if applicable)
+                        'is_reply' => $message->getReplyToMessage() ? true : false, // Indicates if the message is a reply
+                        'reply_to_message_id' => $message->getReplyToMessage() ? $message->getReplyToMessage()->getMessageId() : null, // Message ID to which this message replies
+                    ]);
+                }
             } else {
                 $user = TelegramUsers::Create([
                     'user_id' => $userId,
@@ -343,7 +351,7 @@ class TelegramController extends Controller
 
         $this->telegram->sendMessage([
             'chat_id' => $chatId,
-            'text' => "Warning: Unwanted content detected. This is warning #" . $$user->warning_count
+            'text' => "Warning: Unwanted content detected. This is warning #" . $user->warning_count
         ]);
 
         $this->telegram->deleteMessage([

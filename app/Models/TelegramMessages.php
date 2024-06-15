@@ -10,9 +10,13 @@ class TelegramMessages extends Model
     use HasFactory;
 
     protected $fillable = [
-        'message_id', 'chat_id', 'user_id', 'text', 'caption', 'media_type',
-        'file_id', 'is_forwarded', 'is_reply', 'reply_to_message_id', 
-        'has_media', 'has_document', 'has_location', 
+        'message_id', 
+        'chat_id', 
+        'user_id', 
+        'text', 
+        'caption',
+        'is_reply', 
+        'reply_to_message_id', 
     ];
 
     public function chats()
