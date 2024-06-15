@@ -154,7 +154,7 @@ class TelegramController extends Controller
                     'reply_to_message_id' => $message->getReplyToMessage() ? $message->getReplyToMessage()->getMessageId() : null, // Message ID to which this message replies
                 ]);
             } else {
-                TelegramUsers::Create([
+                $user = TelegramUsers::Create([
                     'user_id' => $userId,
                     'username' => $user,
                     'first_name' => $firstName,
@@ -168,7 +168,7 @@ class TelegramController extends Controller
                 
                 TelegramChats::Create([
                     'chat_id' => $chatId,
-                    'user_id' => $userId,
+                    'user_id' => $user->id,
                     'type' => $chatType,
                     'last_update' => now()
                 ]);
