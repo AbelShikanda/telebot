@@ -155,7 +155,6 @@ class TelegramController extends Controller
                 ]);
             } else {
                 TelegramUsers::Create([
-                    'chat_id' => $chatId,
                     'user_id' => $userId,
                     'username' => $user,
                     'first_name' => $firstName,

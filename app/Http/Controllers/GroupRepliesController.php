@@ -65,7 +65,7 @@ class GroupRepliesController extends Controller
             }
 
             DB::commit();
-            return redirect()->route('replies.index')->with('success', 'Values Stored Successfully.');
+            return redirect()->route('groupreplies.index')->with('success', 'Values Stored Successfully.');
 
 
         } catch (\Throwable $th) {
@@ -139,7 +139,7 @@ class GroupRepliesController extends Controller
             }
 
             DB::commit();
-            return redirect()->route('replies.index')->with('success', 'Values Updated Successfully.');
+            return redirect()->route('groupreplies.index')->with('success', 'Values Updated Successfully.');
 
 
         } catch (\Throwable $th) {
