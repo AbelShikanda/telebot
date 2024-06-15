@@ -125,6 +125,23 @@ class TelegramController extends Controller
             $warning_count = 0; // Assuming initial message count is 1
             $last_warning_at = null; // Default to null
 
+            // Handle new chat members 
+            // consider loggong all new members 
+            if ($message->has('new_chat_members')) {
+                $this->handleNewChatMembers($chatId, $message->getNewChatMembers());
+                // Create user record
+                $user = TelegramUsers::Create([
+                    'user_id' => $userId,
+                    'username' => $user,
+                    'first_name' => $firstName,
+                    'last_name' => $lastName,
+                    'warning_count' => $warning_count,
+                    'last_warning_at' => $last_warning_at,
+                    'joined_at' => $joined_at,
+                    'message_count' => 1, // Initialize message count
+                    'is_admin' => $isAdmin,
+                ]);
+            }
 
             $chat = TelegramChats::where('chat_id', $chatId)->first();
             if ($chat) {
@@ -240,6 +257,14 @@ class TelegramController extends Controller
 
         // Return false for private chats and if the user is not an admin
         return false;
+    }
+
+    private function handleNewChatMembers($chatId, $newMembers)
+    {
+        foreach ($newMembers as $newMember) {
+            $welcomeMessage = "Welcome " . $newMember->getFirstName() . "!";
+            $this->sendMessage($chatId, $welcomeMessage);
+        }
     }
 
     private function handlePrivateChat($chatId, $text)
