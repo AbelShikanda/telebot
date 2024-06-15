@@ -31,7 +31,7 @@ return [
     'bots'                         => [
         'mybot' => [
             'username'               => env('APP_NAME', 'YOUR-BOT-TOKEN'),
-            'token'               => env('TELEGRAM_BOT_TOKEN', '6496982679:AAELMYScxqkTvEFQaBjy5Ml1wULPF2lbYT8'),
+            'token'               => env('TELEGRAM_BOT_TOKEN', 'TELEGRAM_BOT_TOKEN'),
             'certificate_path'    => env('TELEGRAM_CERTIFICATE_PATH', 'YOUR-CERTIFICATE-PATH'),
             'webhook_url'         => env('TELEGRAM_WEBHOOK_URL', 'YOUR-BOT-WEBHOOK-URL'),
             'commands'            => [
