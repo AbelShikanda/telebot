@@ -140,23 +140,17 @@ class TelegramController extends Controller
             $user = TelegramUsers::where('user_id', $userId)->first();
             if ($user) {
                 // update some thigs
-                $user = TelegramUsers::Create([
-                    'user_id' => $userId,
-                    'chat_id' => $chat->id,
-                    'username' => $user,
+                $user->Update([
+                    'username' => $username,
                     'first_name' => $firstName,
                     'last_name' => $lastName,
-                    'warning_count' => $warning_count,
-                    'last_warning_at' => $last_warning_at,
-                    'joined_at' => $joined_at,
-                    'message_count' => 1, // Initialize message count
+                    'message_count' => DB::raw('message_count + 1'), // Increment message count
                     'is_admin' => $isAdmin,
                 ]);
             } else {
                 // Create user record
                 $user = TelegramUsers::Create([
                     'user_id' => $userId,
-                    'chat_id' => $chat->id,
                     'username' => $user,
                     'first_name' => $firstName,
                     'last_name' => $lastName,
