@@ -166,7 +166,7 @@ class TelegramController extends Controller
                     'is_admin' => $isAdmin,
                 ]);
                 
-                TelegramChats::Create([
+                $chat = TelegramChats::Create([
                     'chat_id' => $chatId,
                     'user_id' => $user->id,
                     'type' => $chatType,
@@ -175,8 +175,8 @@ class TelegramController extends Controller
 
                 TelegramMessages::create([
                     'message_id' => $message->getMessageId(),
-                    'chat_id' => $chatId,
-                    'user_id' => $userId,
+                    'chat_id' => $chat->id,
+                    'user_id' => $user->id,
                     'text' => $text,
                     'caption' => $message->getCaption(), // Caption for media (if applicable)
                     'is_reply' => $message->getReplyToMessage() ? true : false, // Indicates if the message is a reply
