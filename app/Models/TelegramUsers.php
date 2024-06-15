@@ -10,8 +10,16 @@ class TelegramUsers extends Model
     use HasFactory;
 
     protected $fillable = [
-        'chat_id', 'user_id', 'username', 'first_name', 'last_name', 'warning_count',
-        'last_warning_at', 'joined_at', 'message_count', 'is_admin',
+        'user_id', 
+        'chat_id', 
+        'username', 
+        'first_name', 
+        'last_name', 
+        'warning_count',
+        'last_warning_at', 
+        'joined_at', 
+        'message_count', 
+        'is_admin',
     ];
 
     public function chat()

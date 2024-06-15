@@ -125,55 +125,33 @@ class TelegramController extends Controller
             $warning_count = 0; // Assuming initial message count is 1
             $last_warning_at = null; // Default to null
 
-            $UserExists = TelegramUsers::where('user_id', $userId)->exists();
-            if ($UserExists) {
-                $user = TelegramUsers::where('user_id', $userId)->first();
+
+            $chat = TelegramChats::where('chat_id', $user->id)->first();
+            if ($chat) {
+                // Do nothing
+            } else {
+                // Create chat record
+                $chat = TelegramChats::create([
+                    'chat_id' => $chatId,
+                    'type' => $chatType,
+                ]);
+            }
+
+            $user = TelegramUsers::where('user_id', $userId)->first();
+            if ($user) {
+                // update some thigs
                 $user->Update([
                     'username' => $username,
                     'first_name' => $firstName,
                     'last_name' => $lastName,
                     'message_count' => DB::raw('message_count + 1'), // Increment message count
                     'is_admin' => $isAdmin,
-                    'updated_at' => now(),
-
                 ]);
-
-                $chat = TelegramChats::where('user_id', $user->id)->first();
-                if ($chat) {
-                    $chat->update([
-                        'type' => $chatType,
-                        'last_update' => now()
-                    ]);
-                } else {
-                    // Create chat record if it does not exist
-                    $chat = TelegramChats::create([
-                        'chat_id' => $chatId,
-                        'user_id' => $user->id,
-                        'type' => $chatType,
-                        'last_update' => now()
-                    ]);
-                }
-
-                $existingMessage = TelegramMessages::where('message_id', $message->getMessageId())->first();
-                if ($existingMessage) {
-                    $existingMessage->update([
-                        'text' => $text,
-                        'updated_at' => now(),
-                    ]);
-                } else {
-                    TelegramMessages::create([
-                        'message_id' => $message->getMessageId(),
-                        'chat_id' => $chat->id,
-                        'user_id' => $user->id,
-                        'text' => $text,
-                        'caption' => $message->getCaption(), // Caption for media (if applicable)
-                        'is_reply' => $message->getReplyToMessage() ? true : false, // Indicates if the message is a reply
-                        'reply_to_message_id' => $message->getReplyToMessage() ? $message->getReplyToMessage()->getMessageId() : null, // Message ID to which this message replies
-                    ]);
-                }
             } else {
+                // Create user record
                 $user = TelegramUsers::Create([
                     'user_id' => $userId,
+                    'chat_id' => $chat->id,
                     'username' => $user,
                     'first_name' => $firstName,
                     'last_name' => $lastName,
@@ -183,20 +161,22 @@ class TelegramController extends Controller
                     'message_count' => 1, // Initialize message count
                     'is_admin' => $isAdmin,
                 ]);
+            }
 
-                $chat = TelegramChats::Create([
-                    'chat_id' => $chatId,
-                    'user_id' => $user->id,
-                    'type' => $chatType,
-                    'last_update' => now()
+
+            $message = TelegramMessages::where('message_id', $message->getMessageId())->first();
+            if ($message) {
+                // update some things
+                $message->update([
+                    'text' => $text,
                 ]);
-
+            } else {
+                // create new user records
                 TelegramMessages::create([
                     'message_id' => $message->getMessageId(),
                     'chat_id' => $chat->id,
                     'user_id' => $user->id,
                     'text' => $text,
-                    'caption' => $message->getCaption(), // Caption for media (if applicable)
                     'is_reply' => $message->getReplyToMessage() ? true : false, // Indicates if the message is a reply
                     'reply_to_message_id' => $message->getReplyToMessage() ? $message->getReplyToMessage()->getMessageId() : null, // Message ID to which this message replies
                 ]);

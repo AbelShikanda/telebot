@@ -21,7 +21,6 @@ class CreateTelegramMessagesTable extends Migration
             $table->foreignId('user_id')->constrained('telegram_users')->onDelete('cascade')->onUpdate('cascade');
             
             $table->text('text')->nullable();
-            $table->text('caption')->nullable(); // Caption for media (if applicable)
             $table->boolean('is_reply')->default(false); // Indicates if the message is a reply
             $table->bigInteger('reply_to_message_id')->unsigned()->nullable(); // Message ID to which this message replies
             $table->timestamps();
