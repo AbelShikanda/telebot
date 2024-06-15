@@ -164,10 +164,10 @@ class TelegramController extends Controller
             }
 
 
-            $message = TelegramMessages::where('message_id', $message->getMessageId())->first();
-            if ($message) {
+            $existingMessage  = TelegramMessages::where('message_id', $message->getMessageId())->first();
+            if ($existingMessage ) {
                 // update some things
-                $message->update([
+                $existingMessage ->update([
                     'text' => $text,
                 ]);
             } else {
