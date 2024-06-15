@@ -147,7 +147,7 @@ class TelegramController extends Controller
                 } else {
                     // Create chat record if it does not exist
                     $chat = TelegramChats::create([
-                        'chat_id' => $$chat->id,
+                        'chat_id' => $chat->id,
                         'user_id' => $user->id,
                         'type' => $chatType,
                         'last_update' => now()
@@ -156,7 +156,7 @@ class TelegramController extends Controller
 
                 TelegramMessages::create([
                     'message_id' => $message->getMessageId(),
-                    'chat_id' => $$chat->id,
+                    'chat_id' => $chat->id,
                     'user_id' => $user->id,
                     'text' => $text,
                     'caption' => $message->getCaption(), // Caption for media (if applicable)
