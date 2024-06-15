@@ -126,7 +126,7 @@ class TelegramController extends Controller
             $last_warning_at = null; // Default to null
 
 
-            $chat = TelegramChats::where('chat_id', $user->id)->first();
+            $chat = TelegramChats::where('chat_id', $chatId)->first();
             if ($chat) {
                 // Do nothing
             } else {
