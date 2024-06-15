@@ -121,65 +121,69 @@ class TelegramController extends Controller
             $firstName = $user->getFirstName();
             $lastName = $user->getLastName();
             $isAdmin = $this->checkIfAdmin($chatId, $userId);
+            $joined_at = now(); // Assuming this is the first interaction
+            $warning_count = 0; // Assuming initial message count is 1
+            $last_warning_at = null; // Default to null
 
-            // $chatExists = TelegramChats::where('chat_id', $chatId)->exists();
-            // if ($chatExists) {
-            //     $chat = TelegramChats::where('chat_id', $chatId)->first();
-            //     $chat->Update([
-            //         'last_update' => now()
-            //     ]);
-            // } else {
-            //     TelegramChats::Create([
-            //         'chat_id' => $chatId,
-            //         'type' => $chatType,
-            //         'last_update' => now()
-            //     ]);
-            // }
+            $UserExists = TelegramUsers::where('user_id', $userId)->exists();
+            if ($UserExists) {
+                $user = TelegramUsers::where('user_id', $userId)->first();
+                $user->Update([
+                    'username' => $username,
+                    'first_name' => $firstName,
+                    'last_name' => $lastName,
+                    'message_count' => DB::raw('message_count + 1'), // Increment message count
+                    'is_admin' => $isAdmin,
+                    'updated_at' => now(),
+                
+                ]);
 
-            // $UserExists = TelegramUsers::where('chat_id', $chatId)->exists();
-            // if ($UserExists) {
-            //     $user = TelegramUsers::where('chat_id', $chatId)->first();
-            //     $user->Update([
-            //         'username' => $userData['username'],
-            //         'first_name' => $userData['first_name'],
-            //         'last_name' => $userData['last_name'],
-            //         'warning_count' => $userData['warning_count'],
-            //         'last_warning_at' => $userData['last_warning_at'],
-            //         'joined_at' => $userData['joined_at'],
-            //         'message_count' => DB::raw('message_count + 1'), // Increment message count
-            //         'is_admin' => $userData['is_admin'],
-            //         'updated_at' => now(),
-            //     ]);
-            // } else {
-            //     TelegramUsers::Create([
-            //         'chat_id' => $userData['chat_id'],
-            //         'user_id' => $userData['user_id'],
-            //         'username' => $userData['username'],
-            //         'first_name' => $userData['first_name'],
-            //         'last_name' => $userData['last_name'],
-            //         'warning_count' => $userData['warning_count'],
-            //         'last_warning_at' => $userData['last_warning_at'],
-            //         'joined_at' => $userData['joined_at'],
-            //         'message_count' => 1, // Initialize message count
-            //         'is_admin' => $userData['is_admin'],
-            //     ]);
-            // }
+                $chat = TelegramChats::where('user_id', $userId)->first();
+                $chat->Update([
+                    'type' => $chatType,
+                    'last_update' => now()
+                ]);
 
-            // // Insert the message record
-            // TelegramMessages::create([
-            //     'message_id' => $message->getMessageId(),
-            //     'chat_id' => $userData['chat_id'],
-            //     'user_id' => $userData['user_id'],
-            //     'text' => $userData['text'],
-            //     'caption' => $message->getCaption(), // Caption for media (if applicable)
-            //     'media_type' => $userData['has_media'], // Type of media (photo, video, etc.)
-            //     'file_id' => $userData['file_id'], // Unique identifier for files (if applicable)
-            //     'is_forwarded' => $message->getForwardFrom() ? true : false, // Indicates if the message is forwarded
-            //     'is_reply' => $message->getReplyToMessage() ? true : false, // Indicates if the message is a reply
-            //     'reply_to_message_id' => $message->getReplyToMessage() ? $message->getReplyToMessage()->getMessageId() : null, // Message ID to which this message replies
-            //     'has_document' => $message->getDocument() ? true : false, // Indicates if the message contains a document
-            //     'has_location' => $message->getLocation() ? true : false, // Indicates if the message contains a location
-            // ]);
+                TelegramMessages::create([
+                    'message_id' => $message->getMessageId(),
+                    'chat_id' => $chatId,
+                    'user_id' => $user->id,
+                    'text' => $text,
+                    'caption' => $message->getCaption(), // Caption for media (if applicable)
+                    'is_reply' => $message->getReplyToMessage() ? true : false, // Indicates if the message is a reply
+                    'reply_to_message_id' => $message->getReplyToMessage() ? $message->getReplyToMessage()->getMessageId() : null, // Message ID to which this message replies
+                ]);
+            } else {
+                TelegramUsers::Create([
+                    'chat_id' => $chatId,
+                    'user_id' => $userId,
+                    'username' => $user,
+                    'first_name' => $firstName,
+                    'last_name' => $lastName,
+                    'warning_count' => $warning_count,
+                    'last_warning_at' => $last_warning_at,
+                    'joined_at' => $joined_at,
+                    'message_count' => 1, // Initialize message count
+                    'is_admin' => $isAdmin,
+                ]);
+                
+                TelegramChats::Create([
+                    'chat_id' => $chatId,
+                    'user_id' => $userId,
+                    'type' => $chatType,
+                    'last_update' => now()
+                ]);
+
+                TelegramMessages::create([
+                    'message_id' => $message->getMessageId(),
+                    'chat_id' => $chatId,
+                    'user_id' => $userId,
+                    'text' => $text,
+                    'caption' => $message->getCaption(), // Caption for media (if applicable)
+                    'is_reply' => $message->getReplyToMessage() ? true : false, // Indicates if the message is a reply
+                    'reply_to_message_id' => $message->getReplyToMessage() ? $message->getReplyToMessage()->getMessageId() : null, // Message ID to which this message replies
+                ]);
+            }
 
             switch ($chatType) {
                 case 'private':
@@ -318,93 +322,42 @@ class TelegramController extends Controller
     {
         $warningThreshold = 3; // Number of warnings before action is taken
 
-        // $warning = DB::table('telegram_users')
-        //     ->where('chat_id', $chatId)
-        //     ->where('user_id', $userId)
-        //     ->first();
+        $user = TelegramUsers::where('user_id', $userId);
 
-        // if ($warning) {
-        //     // Increment the warning count
-        //     $warningCount = $warning->warning_count + 1;
-        //     DB::table('telegram_users')
-        //         ->where('chat_id', $chatId)
-        //         ->where('user_id', $userId)
-        //         ->update([
-        //             'warning_count' => $warningCount,
-        //             'last_warning_at' => now()
-        //         ]);
-        // } else {
-        //     // Initialize the warning count for the user
-        //     $warningCount = 1;
-        //     DB::table('telegram_users')
-        //         ->where('chat_id', $chatId)
-        //         ->where('user_id', $userId)
-        //         ->update([
-        //             'warning_count' => $warningCount,
-        //             'last_warning_at' => now()
-        //         ]);
-        // }
-
-
-        // Initialize warnings for the user if not already done
-        if (!isset($this->warnings[$chatId])) {
-            $this->warnings[$chatId] = [];
+        if ($user) {
+            $user->warning_count += 1;
+            $user->last_warning_at = now();
+        } else {
+            $user->warning_count = 1;
         }
-        if (!isset($this->warnings[$chatId][$userId])) {
-            $this->warnings[$chatId][$userId] = 0;
-        }
+        $user->save();
 
-        // Increment the warning count
-        $this->warnings[$chatId][$userId]++;
-
-
-        // Send a warning message to the user
         $this->telegram->sendMessage([
             'chat_id' => $chatId,
-            // 'text' => "Warning: Unwanted content detected. This is warning #" . $warningCount
-            'text' => "Warning: Unwanted content detected. This is warning #" . $this->warnings[$chatId][$userId]
+            'text' => "Warning: Unwanted content detected. This is warning #" . $$user->warning_count
         ]);
 
-        // Delete the unwanted message
         $this->telegram->deleteMessage([
             'chat_id' => $chatId,
             'message_id' => $message->getMessageId()
         ]);
 
         // If the warning count exceeds the threshold, ban the user
-        // if ($warningCount >= $warningThreshold) {
-        //     // Restrict the user from sending messages
-        //     $this->restrictUser($chatId, $userId);
+        if ($user && $user->warning_count >= $warningThreshold) {
+            // Restrict the user from sending messages
+            $this->restrictUser($chatId, $userId);
 
-        //     // Reset the warning count after taking action
-        //     DB::table('telegram_users')
-        //         ->where('chat_id', $chatId)
-        //         ->where('user_id', $userId)
-        //         ->update(['warning_count' => 0]);
-        // }
-
-        if ($this->warnings[$chatId][$userId] >= $warningThreshold) {
-            // Delete the message
-            $this->telegram->deleteMessage([
-                'chat_id' => $chatId,
-                'message_id' => $message->getMessageId()
-            ]);
-    
-            // Ban the user
-            $this->telegram->kickChatMember([
-                'chat_id' => $chatId,
-                'user_id' => $userId
-            ]);
-    
             // Reset the warning count after taking action
-            unset($this->warnings[$chatId][$userId]);
+            // Initialize the warning count for the user
+            $user->warning_count = 0;
+            $user->save();
         }
     }
 
     private function generateGroupReply($text)
     {
         // $replies = GroupReplies::all();
-        $replies = Replies::all();
+        $replies = GroupReplies::all();
 
         $normalizedText = strtolower(trim($text));
 
