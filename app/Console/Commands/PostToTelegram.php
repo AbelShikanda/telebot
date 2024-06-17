@@ -5,6 +5,7 @@ namespace App\Console\Commands;
 use App\Models\Posts;
 use Illuminate\Console\Command;
 use Telegram\Bot\Api;
+use Exception;
 
 class PostToTelegram extends Command
 {
@@ -42,20 +43,20 @@ class PostToTelegram extends Command
      */
     public function handle()
     {
-        // Fetch a random post from the database
-        $post = Posts::inRandomOrder()->first();
+        try {
+            // Fetch a random post from the database
+            $post = Posts::inRandomOrder()->first();
 
-        if ($post) {
-
-            // Define the array of chat IDs
-            $chatIds = [
-                env('TELEGRAM_CHAT_ID_1'),
-                env('TELEGRAM_CHAT_ID_2'),
-                // Add more chat IDs as needed
-            ];
-
-            // Check if the post has an image
             if ($post) {
+                // Define the array of chat IDs
+                $chatIds = config('telegram.chat_ids', []);
+
+                // Check if there are chat IDs configured
+                if (empty($chatIds)) {
+                    throw new Exception('No Telegram chat IDs configured.');
+                }
+
+                // Iterate over each chat ID and send the post
                 foreach ($chatIds as $chatId) {
                     // Check if the post has an image
                     if ($post->image_url) {
@@ -73,11 +74,17 @@ class PostToTelegram extends Command
                         ]);
                     }
                 }
+
+                // Mark the post as sent
+                $post->update(['posted_to_telegram' => true]);
+
+                $this->info('Random post sent to Telegram groups successfully!');
+            } else {
+                $this->warn('No posts available to send.');
             }
 
-            $this->info('Random post sent to Telegram groups successfully!');
-        } else {
-            $this->warn('No posts available to send.');
+        } catch (Exception $e) {
+            $this->error('Error sending post to Telegram: ' . $e->getMessage());
         }
     }
 }
