@@ -65,15 +65,15 @@ class PostToTelegram extends Command
                         // Send the image along with the caption to the Telegram group
                         // Ensure $post->caption is not empty
                         $caption = !empty($post->caption) ? $post->caption : 'No caption provided';
+                        dd(asset('storage/app/public/posts/' . $post->image));
 
                         $this->telegram->sendPhoto([
                             'chat_id' => $chatId,
-                            'photo' => $image,
+                            'photo' => asset('storage/app/public/posts/' . $post->image),
                             'caption' => $caption ?: 'No caption provided',
                         ]);
                     } else {
                         // Send the text content if there's no image
-                        // Send a default message if there's no image
                         $text = !empty($post->caption) ? $post->caption : 'No content provided';
                         $this->telegram->sendMessage([
                             'chat_id' => $chatId,

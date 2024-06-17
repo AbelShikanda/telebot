@@ -45,8 +45,8 @@ return [
     ],
 
     'chat_ids' => [
-        env('TELEGRAM_CHAT_ID', '-1285112886'),
-        env('TELEGRAM_CHAT_ID', '-532444837'),
+        env('TELEGRAM_CHAT_ID_1', '-1002012492854'),
+        env('TELEGRAM_CHAT_ID_2', '-532444837'),
         // Add more chat IDs as needed
     ],
 
