@@ -410,9 +410,8 @@ class TelegramController extends Controller
                     ]);
                 }
             }
-            $this->info('Random post sent to Telegram groups successfully!');
         } else {
-            $this->warn('No posts available to send.');
+            // $this->warn('No posts available to send.');
         }
     }
 
