@@ -79,7 +79,7 @@ class PostsController extends Controller
             }
 
             DB::commit();
-            return redirect()->route('product_images.index')->with('success', 'User Stored Successfully.');
+            return redirect()->route('posts.index')->with('success', 'User Stored Successfully.');
 
 
         } catch (\Throwable $th) {
@@ -166,7 +166,7 @@ class PostsController extends Controller
             }
 
             DB::commit();
-            return redirect()->route('product_images.index')->with('success', 'User Stored Successfully.');
+            return redirect()->route('posts.index')->with('success', 'User Stored Successfully.');
 
 
         } catch (\Throwable $th) {
