@@ -67,7 +67,7 @@ class PostsController extends Controller
             $croppedImage = $image->resize(1280, 853);
 
             // Save the resized and cropped image to storage
-            $croppedImagePath = 'posts/' . $fileName;
+            $croppedImagePath = 'app/public/posts/' . $fileName;
             Storage::disk('public')->put($croppedImagePath, (string) $croppedImage->toJpeg());
         } else {
             return response()->json(['error' => 'No file uploaded'], 400);
