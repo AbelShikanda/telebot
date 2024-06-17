@@ -59,16 +59,16 @@ class PostToTelegram extends Command
                 // Iterate over each chat ID and send the post
                 foreach ($chatIds as $chatId) {
                     // Check if the post has an image
-                    if ($post->image_url) {
+                    if ($post->image) {
                         $caption = trim($post->caption);
-                        $imageUrl = trim($post->image);
+                        $image = trim($post->image);
                         // Send the image along with the caption to the Telegram group
                         // Ensure $post->caption is not empty
                         $caption = !empty($post->caption) ? $post->caption : 'No caption provided';
 
                         $this->telegram->sendPhoto([
                             'chat_id' => $chatId,
-                            'photo' => $imageUrl,
+                            'photo' => $image,
                             'caption' => $caption ?: 'No caption provided',
                         ]);
                     } else {

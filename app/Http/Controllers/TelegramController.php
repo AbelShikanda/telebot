@@ -204,7 +204,7 @@ class TelegramController extends Controller
                     break;
                 case 'group':
                 case 'supergroup':
-                    $this->handleGroupChat($chatId, $text, $message);
+                    $this->handleGroupChat($chatId, $userId, $text, $message);
                     break;
                 case 'channel':
                     $this->handleChannel($chatId, $text);
@@ -334,7 +334,8 @@ class TelegramController extends Controller
             $reply = $this->generateGroupReply($text);
             $this->telegram->sendMessage([
                 'chat_id' => $chatId,
-                'text' => $reply
+                'text' => $reply,
+                'reply_to_message_id' => $message['message_id']
             ]);
         }
     }

@@ -20,6 +20,8 @@ class PostsController extends Controller
     public function index()
     {
         $posts = Posts::all();
+        $chatIds = config('telegram.chat_ids', []);
+        dd($chatIds);
         return view('posts.index', with([
             'posts' => $posts,
         ]));
