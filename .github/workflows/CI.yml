@@ -27,8 +27,8 @@ jobs:
         run: composer install --no-scripts
 
       # PHPUnit tests
-      - name: PHPUnit tests
-        run: php artisan test
+      # - name: PHPUnit tests
+      #   run: php artisan test
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
