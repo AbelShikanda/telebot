@@ -219,12 +219,9 @@ jobs:
           script: |
             printf "%s" "$LARAVEL_ENV" > "${BASE_PATH}/.env"
             ln -s -n -f ${BASE_PATH}/.env $RELEASE_PATH
-            ln -s -n -f $STORAGE_PATH $LINK_RELEASE_PATH
+            ln -s -n -f $STORAGE_PATH $RELEASE_PATH
             ln -s -n -f $RELEASE_PATH $ACTIVE_RELEASE_PATH
-            cd $ACTIVE_RELEASE_PATH
-            php artisan config:cache
-            php artisan route:cache
-            php artisan view:cache
+            ln -s -n -f $STORAGE_PATH $LINK_RELEASE_PATH
   # Run Migrations release
   migrations-run:
     name: migrations-run
