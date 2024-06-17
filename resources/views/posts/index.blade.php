@@ -23,7 +23,7 @@
                 @foreach ($posts as $post)
                     <tr>
                         <th scope="row">1</th>
-                        <td><img src="{{ $post->image }}" alt="" style="width: 50px"></td>
+                        <td>{{ $post->image }}</td>
                         <td>{{ $post->caption }}</td>
                         <td>
                             <a href="{{ route('posts.edit', $post->id) }}" class="btn btn-warning">Edit replies</a>
