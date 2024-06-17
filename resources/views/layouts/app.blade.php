@@ -95,6 +95,8 @@
                             href="{{ route('groupreplies.index') }}">Group Replies</a></li>
                     <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-3 px-0 px-lg-3 rounded"
                         href="{{ route('posts.index') }}">Posts</a></li>
+                    <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-3 px-0 px-lg-3 rounded"
+                        href="{{ route('spam.index') }}">Spam</a></li>
                 </ul>
             </div>
         </div>

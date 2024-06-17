@@ -69,14 +69,14 @@ class PostToTelegram extends Command
 
                         $this->telegram->sendPhoto([
                             'chat_id' => $chatId,
-                            'photo' => new InputFile(asset('storage/app/public/posts/' . $post->image)),
+                            'photo' => new InputFile(asset('storage/app/public/posts/' . $image)),
                             'caption' => $caption ?: 'No caption provided',
                         ]);
-                        dd($this->telegram->sendPhoto([
-                            'chat_id' => $chatId,
-                            'photo' => new InputFile(asset('storage/app/public/posts/' . $post->image)),
-                            'caption' => $caption ?: 'No caption provided',
-                        ]));
+                        // dd($this->telegram->sendPhoto([
+                        //     'chat_id' => $chatId,
+                        //     'photo' => new InputFile(asset('storage/app/public/posts/' . $post->image)),
+                        //     'caption' => $caption ?: 'No caption provided',
+                        // ]));
                     } else {
                         // Send the text content if there's no image
                         $text = !empty($post->caption) ? $post->caption : 'No content provided';

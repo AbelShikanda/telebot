@@ -4,6 +4,7 @@ use App\Http\Controllers\GroupRepliesController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\PostsController;
 use App\Http\Controllers\RepliesController;
+use App\Http\Controllers\SpamController;
 use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\telebotController;
@@ -47,6 +48,8 @@ Route::resource('replies', RepliesController::class);
 Route::resource('groupreplies', GroupRepliesController::class);
 // //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 Route::resource('posts', PostsController::class);
+// //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Route::resource('spam', SpamController::class);
 // //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 // Route::get('sendPoll', [App\Http\Controllers\TelegramController::class, 'sendPoll']);
 // //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
