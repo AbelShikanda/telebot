@@ -81,10 +81,6 @@ class PostToTelegram extends Command
                         ]);
                     }
                 }
-
-                // Mark the post as sent
-                $post->update(['posted_to_telegram' => true]);
-
                 $this->info('Random post sent to Telegram groups successfully!');
             } else {
                 $this->warn('No posts available to send.');
