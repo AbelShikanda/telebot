@@ -181,9 +181,9 @@ class TelegramController extends Controller
 
 
             $existingMessage  = TelegramMessages::where('message_id', $message->getMessageId())->first();
-            if ($existingMessage) {
+            if ($existingMessage ) {
                 // update some things
-                $existingMessage->update([
+                $existingMessage ->update([
                     'text' => $text,
                 ]);
             } else {
@@ -299,39 +299,7 @@ class TelegramController extends Controller
         $botId = $bot->getId();
 
         // Extract text from the message
-        // $text = $message->getText();
-
-        // Initialize variables for text and userId
-        $messageText = null;
-        $userId = null;
-
-        // Check if $message is an object (assuming it's from Telegram API)
-        if (is_object($message)) {
-            // Retrieve text from message object safely
-            $messageText = $message->getText();
-
-            // Get user ID from message object
-            $userId = $message->getFrom()->getId();
-
-            // Check if the message is a reply to a bot's message
-            if ($message->getReplyToMessage()) {
-                $isReplyToBot = $message->getReplyToMessage()->getFrom()->getId() === $botId;
-
-                // If bot is mentioned or the message is a reply to a bot's message
-                if ($isReplyToBot) {
-                    $reply = $this->generateGroupReply($messageText);
-                    $this->telegram->sendMessage([
-                        'chat_id' => $chatId,
-                        'text' => $reply,
-                        'reply_to_message_id' => $message->getMessageId()
-                    ]);
-                }
-            }
-        } else {
-            // Handle case where $message is not an object (possibly a string or null)
-            $this->handleNonTelegramMessage($chatId, $message);
-            return;
-        }
+        $text = $message->getText();
 
         // Define unwanted content keywords
         $unwantedKeywords = ['spam', 'unwanted', 'badword']; // Add your own keywords
@@ -370,16 +338,6 @@ class TelegramController extends Controller
                 'reply_to_message_id' => $message['message_id']
             ]);
         }
-    }
-
-    private function handleNonTelegramMessage($chatId, $message)
-    {
-        // Handle non-Telegram messages (e.g., strings or null values)
-        // Log or handle as needed
-        $this->telegram->sendMessage([
-            'chat_id' => $chatId,
-            'text' => 'Received a non-Telegram message. Please send messages through Telegram.',
-        ]);
     }
 
     private function handleUnwantedContent($chatId, $userId, $message)
