@@ -4,15 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Models\Replies;
 use App\Models\GroupReplies;
-use App\Models\Posts;
 use App\Models\TelegramChats;
 use App\Models\TelegramMessages;
 use App\Models\TelegramUsers;
-use Exception;
 use Illuminate\Http\Request;
 use Telegram\Bot\Api;
 use Illuminate\Support\Facades\DB;
-use Telegram\Bot\FileUpload\InputFile;
 
 class TelegramController extends Controller
 {
@@ -369,49 +366,6 @@ class TelegramController extends Controller
                 'text' => $reply,
                 'reply_to_message_id' => $message['message_id']
             ]);
-        }
-    }
-
-    private function handleNonTelegramMessage($chatId, $message)
-    {
-        // Fetch a random post from the database
-        $post = Posts::inRandomOrder()->first();
-
-        if ($post) {
-            // Define the array of chat IDs
-            $chatIds = config('telegram.chat_ids', []);
-
-            // Check if there are chat IDs configured
-            if (empty($chatIds)) {
-                throw new Exception('No Telegram chat IDs configured.');
-            }
-
-            // Iterate over each chat ID and send the post
-            foreach ($chatIds as $chatId) {
-                // Check if the post has an image
-                if ($post->image) {
-                    $caption = trim($post->caption);
-                    $image = trim($post->image);
-
-                    // Ensure $post->caption is not empty
-                    $caption = !empty($post->caption) ? $post->caption : 'No caption provided';
-
-                    $this->telegram->sendPhoto([
-                        'chat_id' => $chatId,
-                        'photo' => new InputFile(asset('storage/app/public/posts/' . $image)),
-                        'caption' => $caption ?: 'No caption provided',
-                    ]);
-                } else {
-                    // Send the text content if there's no image
-                    $text = !empty($post->caption) ? $post->caption : 'No content provided';
-                    $this->telegram->sendMessage([
-                        'chat_id' => $chatId,
-                        'text' => $text ?: 'No caption provided',
-                    ]);
-                }
-            }
-        } else {
-            // $this->warn('No posts available to send.');
         }
     }
 
