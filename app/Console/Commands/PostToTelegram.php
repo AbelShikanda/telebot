@@ -50,7 +50,6 @@ class PostToTelegram extends Command
             if ($post) {
                 // Define the array of chat IDs
                 $chatIds = config('telegram.chat_ids', []);
-                $caption = $post->caption ?: 'No caption provided';
 
                 // Check if there are chat IDs configured
                 if (empty($chatIds)) {
@@ -62,16 +61,21 @@ class PostToTelegram extends Command
                     // Check if the post has an image
                     if ($post->image_url) {
                         // Send the image along with the caption to the Telegram group
+                        // Ensure $post->caption is not empty
+                        $caption = !empty($post->caption) ? $post->caption : 'No caption provided';
+
                         $this->telegram->sendPhoto([
                             'chat_id' => $chatId,
                             'photo' => $post->image_url,
-                            'caption' => $post->caption,
+                            'caption' => $caption,
                         ]);
                     } else {
                         // Send the text content if there's no image
+                        // Send a default message if there's no image
+                        $text = !empty($post->caption) ? $post->caption : 'No content provided';
                         $this->telegram->sendMessage([
                             'chat_id' => $chatId,
-                            'text' => 'No content provided',
+                            'text' => $text,
                         ]);
                     }
                 }
@@ -83,7 +87,6 @@ class PostToTelegram extends Command
             } else {
                 $this->warn('No posts available to send.');
             }
-
         } catch (Exception $e) {
             $this->error('Error sending post to Telegram: ' . $e->getMessage());
         }

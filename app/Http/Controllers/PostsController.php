@@ -7,6 +7,8 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
+use Intervention\Image\Drivers\Gd\Driver;
+use Intervention\Image\ImageManager;
 
 class PostsController extends Controller
 {
@@ -48,28 +50,35 @@ class PostsController extends Controller
             'caption' => 'required',
         ]);
         
-        $images = $request->file('image');
-        dd($images);
-        if (isset($images))
-        {
-            $currentDate = Carbon::now()->toDateString();
-            $imageName = $currentDate.'-'.uniqid().'.'.$images->getClientOriginalExtension();
-            if (!Storage::disk('public')->exists('posts'))
-            {
-                Storage::disk('public')->makeDirectory('posts');
-            }
-            $postImage = Posts::make($images)->resize(320, 370)->stream();
-            Storage::disk('public')->put('posts/'.$imageName, $postImage);
-        } else
-        {
-            $imageName = 'default.png';
+        $file = $request->file('image');
+        if (isset($file)) {
+            $file = $request->file('image');
+            // dd($file);
+            $currentDate = now()->toDateString();
+            $fileName = $currentDate . '-' . uniqid() . '.' . $file->getClientOriginalExtension();
+
+            // Create new ImageManager instance with desired driver
+            $manager = new ImageManager(Driver::class); // or ['driver' => 'gd']
+
+            // Read the image
+            $image = $manager->read($file->getPathname());
+
+            // Resize and crop the image to a 2:3 aspect ratio (800x1200)
+            $croppedImage = $image->resize(1280, 853);
+
+            // Save the resized and cropped image to storage
+            $croppedImagePath = 'posts/' . $fileName;
+            Storage::disk('public')->put($croppedImagePath, (string) $croppedImage->toJpeg());
+        } else {
+            return response()->json(['error' => 'No file uploaded'], 400);
         }
+        // dd($fileName);
         
         try {
             DB::beginTransaction();
             
             $posts = Posts::create([
-                'image' => $imageName,
+                'image' => $fileName,
                 'caption' => $request->caption,
             ]);
 
@@ -106,9 +115,9 @@ class PostsController extends Controller
      * @param  \App\Models\Posts  $posts
      * @return \Illuminate\Http\Response
      */
-    public function edit(Posts $posts)
+    public function edit($id)
     {
-        $post = Posts::findOrFail($posts->id);
+        $post = Posts::findOrFail($id);
         return view('posts.edit', with([
             'post' => $post,
         ]));

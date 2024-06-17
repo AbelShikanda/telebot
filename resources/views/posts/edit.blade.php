@@ -14,17 +14,17 @@
                 </div>
             @endif
             <div class="col-6">
-                <form action="{{ route('posts.update', $replies->id) }}" method="POST">
+                <form action="{{ route('posts.update', $post->id) }}" method="POST" enctype="multipart/form-data">
                     @csrf
                     @method('Patch')
                     <div class="form-group">
                         <label>Image</label>
-                        <input class="form-control" type="file" name="image" placeholder="Select an image" value="{{ $replies->keyword }}">
+                        <input class="form-control" type="file" name="image" placeholder="Select an image" value="{{ $post->image }}">
                         <small id="emailHelp" class="form-text text-muted">add any keywords you can think of</small>
                     </div>
                     <div class="form-group">
                         <label>caption</label>
-                        <textarea name="caption" class="form-control" cols="30" rows="10" placeholder="{{ $replies->response }}"></textarea>
+                        <textarea name="caption" class="form-control" cols="30" rows="10" placeholder="{{ $post->caption }}"></textarea>
                     </div>
                     <button type="submit" class="btn btn-primary">Submit</button>
                 </form>
