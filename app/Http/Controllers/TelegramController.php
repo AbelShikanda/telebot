@@ -18,7 +18,6 @@ class TelegramController extends Controller
     protected $chat_id;
     protected $username;
     protected $text;
-    private $warnings = []; // In-memory storage for warnings; replace with database in production
 
     public function __construct()
     {
@@ -92,6 +91,7 @@ class TelegramController extends Controller
 
     public function handle()
     {
+
         $update = $this->getUpdate();
 
         // Handle the command
