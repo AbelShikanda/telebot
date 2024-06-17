@@ -69,7 +69,7 @@ class PostToTelegram extends Command
                         // Send the text content if there's no image
                         $this->telegram->sendMessage([
                             'chat_id' => $chatId,
-                            'text' => $post->content,
+                            'text' => $post->caption,
                         ]);
                     }
                 }
