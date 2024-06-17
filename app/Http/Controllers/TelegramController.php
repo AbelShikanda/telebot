@@ -374,49 +374,45 @@ class TelegramController extends Controller
 
     private function handleNonTelegramMessage($chatId, $message)
     {
-        try {
-            // Fetch a random post from the database
-            $post = Posts::inRandomOrder()->first();
+        // Fetch a random post from the database
+        $post = Posts::inRandomOrder()->first();
 
-            if ($post) {
-                // Define the array of chat IDs
-                $chatIds = config('telegram.chat_ids', []);
+        if ($post) {
+            // Define the array of chat IDs
+            $chatIds = config('telegram.chat_ids', []);
 
-                // Check if there are chat IDs configured
-                if (empty($chatIds)) {
-                    throw new Exception('No Telegram chat IDs configured.');
-                }
-
-                // Iterate over each chat ID and send the post
-                foreach ($chatIds as $chatId) {
-                    // Check if the post has an image
-                    if ($post->image) {
-                        $caption = trim($post->caption);
-                        $image = trim($post->image);
-
-                        // Ensure $post->caption is not empty
-                        $caption = !empty($post->caption) ? $post->caption : 'No caption provided';
-
-                        $this->telegram->sendPhoto([
-                            'chat_id' => $chatId,
-                            'photo' => new InputFile(asset('storage/app/public/posts/' . $image)),
-                            'caption' => $caption ?: 'No caption provided',
-                        ]);
-                    } else {
-                        // Send the text content if there's no image
-                        $text = !empty($post->caption) ? $post->caption : 'No content provided';
-                        $this->telegram->sendMessage([
-                            'chat_id' => $chatId,
-                            'text' => $text ?: 'No caption provided',
-                        ]);
-                    }
-                }
-                $this->info('Random post sent to Telegram groups successfully!');
-            } else {
-                $this->warn('No posts available to send.');
+            // Check if there are chat IDs configured
+            if (empty($chatIds)) {
+                throw new Exception('No Telegram chat IDs configured.');
             }
-        } catch (Exception $e) {
-            $this->error('Error sending post to Telegram: ' . $e->getMessage());
+
+            // Iterate over each chat ID and send the post
+            foreach ($chatIds as $chatId) {
+                // Check if the post has an image
+                if ($post->image) {
+                    $caption = trim($post->caption);
+                    $image = trim($post->image);
+
+                    // Ensure $post->caption is not empty
+                    $caption = !empty($post->caption) ? $post->caption : 'No caption provided';
+
+                    $this->telegram->sendPhoto([
+                        'chat_id' => $chatId,
+                        'photo' => new InputFile(asset('storage/app/public/posts/' . $image)),
+                        'caption' => $caption ?: 'No caption provided',
+                    ]);
+                } else {
+                    // Send the text content if there's no image
+                    $text = !empty($post->caption) ? $post->caption : 'No content provided';
+                    $this->telegram->sendMessage([
+                        'chat_id' => $chatId,
+                        'text' => $text ?: 'No caption provided',
+                    ]);
+                }
+            }
+            $this->info('Random post sent to Telegram groups successfully!');
+        } else {
+            $this->warn('No posts available to send.');
         }
     }
 
