@@ -47,8 +47,9 @@ class PostsController extends Controller
             'image' => 'required',
             'caption' => 'required',
         ]);
-
+        
         $images = $request->file('image');
+        dd($images);
         if (isset($images))
         {
             $currentDate = Carbon::now()->toDateString();

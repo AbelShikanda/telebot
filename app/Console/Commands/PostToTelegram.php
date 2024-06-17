@@ -50,6 +50,7 @@ class PostToTelegram extends Command
             if ($post) {
                 // Define the array of chat IDs
                 $chatIds = config('telegram.chat_ids', []);
+                $caption = $post->caption ?: 'No caption provided';
 
                 // Check if there are chat IDs configured
                 if (empty($chatIds)) {
@@ -70,7 +71,7 @@ class PostToTelegram extends Command
                         // Send the text content if there's no image
                         $this->telegram->sendMessage([
                             'chat_id' => $chatId,
-                            'text' => $post->caption ?: 'No content provided',
+                            'text' => 'No content provided',
                         ]);
                     }
                 }
