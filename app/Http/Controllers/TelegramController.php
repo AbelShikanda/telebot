@@ -299,7 +299,7 @@ class TelegramController extends Controller
         $botId = $bot->getId();
 
         // Extract text from the message
-        $text = $message->getText();
+        $text = $message ? $message->getText() : null;
 
         // Define unwanted content keywords
         $unwantedKeywords = ['spam', 'unwanted', 'badword']; // Add your own keywords
@@ -314,7 +314,7 @@ class TelegramController extends Controller
         }
 
         // Get user ID
-        $userId = $message->getFrom()->getId();
+        $userId = $message ? $message->getFrom()->getId() : null;
 
         // If the message contains unwanted content, issue a warning
         if ($containsUnwantedContent) {
