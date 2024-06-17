@@ -181,9 +181,9 @@ class TelegramController extends Controller
 
 
             $existingMessage  = TelegramMessages::where('message_id', $message->getMessageId())->first();
-            if ($existingMessage) {
+            if ($existingMessage ) {
                 // update some things
-                $existingMessage->update([
+                $existingMessage ->update([
                     'text' => $text,
                 ]);
             } else {
@@ -299,7 +299,7 @@ class TelegramController extends Controller
         $botId = $bot->getId();
 
         // Extract text from the message
-        $text = $message ? $message->getText() : null;
+        $text = $message->getText();
 
         // Define unwanted content keywords
         $unwantedKeywords = ['spam', 'unwanted', 'badword']; // Add your own keywords
@@ -314,7 +314,7 @@ class TelegramController extends Controller
         }
 
         // Get user ID
-        $userId = $message ? $message->getFrom()->getId() : null;
+        $userId = $message->getFrom()->getId();
 
         // If the message contains unwanted content, issue a warning
         if ($containsUnwantedContent) {
@@ -326,19 +326,17 @@ class TelegramController extends Controller
         $botMentioned = strpos($text, '@' . $botUsername) !== false;
 
         // Check if the message is a reply to a bot's message
-        if ($message) {
-            $replyToMessage = $message->getReplyToMessage();
-            $isReplyToBot = $replyToMessage && $replyToMessage->getFrom()->getId() === $botId;
+        $replyToMessage = $message->getReplyToMessage();
+        $isReplyToBot = $replyToMessage && $replyToMessage->getFrom()->getId() === $botId;
 
-            // If bot is mentioned or the message is a reply to a bot's message
-            if ($botMentioned || $isReplyToBot) {
-                $reply = $this->generateGroupReply($text);
-                $this->telegram->sendMessage([
-                    'chat_id' => $chatId,
-                    'text' => $reply,
-                    'reply_to_message_id' => $message['message_id']
-                ]);
-            }
+        // If bot is mentioned or the message is a reply to a bot's message
+        if ($botMentioned || $isReplyToBot) {
+            $reply = $this->generateGroupReply($text);
+            $this->telegram->sendMessage([
+                'chat_id' => $chatId,
+                'text' => $reply,
+                'reply_to_message_id' => $message['message_id']
+            ]);
         }
     }
 
