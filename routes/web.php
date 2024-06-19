@@ -19,29 +19,33 @@ Route::get('/', function () {
 //+++++++++++++++++++++++++++++
 Route::get('/home', [HomeController::class, 'index'])->name('home');
 // //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-Route::get('/get-me', [TelegramController::class, 'getMe'])->name('getMe');
+Route::get('/getMe', [TelegramController::class, 'getMe'])->name('getMe');
 // //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-Route::get('/set/hook', [TelegramController::class, 'setWebHook'])->name('setWebHook');
+Route::get('set-webhook', [TelegramController::class, 'setWebHook'])->name('setWebHook');
 // //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-Route::post(env('TELEGRAM_BOT_TOKEN') . '/webhook', [TelegramController::class, 'handleWebhook'])->name('handleWebhook');
-// //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-Route::get('/telegram/handle', [TelegramController::class, 'handleRequest'])->name('handleRequest');
-// //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-Route::get('/telegram/show/menu', [TelegramController::class, 'showMenu'])->name('showMenu');
-// //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-Route::get('/telegram/send/message', [TelegramController::class, 'sendMessage'])->name('sendMessage');
-// //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-Route::get('/telegram/handle', [TelegramController::class, 'handle'])->name('handle');
-// //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-Route::get('/telegram/handle/webhook', [TelegramController::class, 'handleWebhook'])->name('handleWebhook');
-// //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-Route::get('/telegram/private/chat', [TelegramController::class, 'handlePrivateChat'])->name('handlePrivateChat');
-// //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-Route::get('/telegram/group/chat', [TelegramController::class, 'handleGroupChat'])->name('handleGroupChat');
-// //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-Route::get('/telegram/channel', [TelegramController::class, 'handleChannel'])->name('handleChannel');
-// //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-Route::get('/telegram/unknown/chat/type', [TelegramController::class, 'handleUnknownChatType'])->name('handleUnknownChatType');
+Route::post('/webhook', [TelegramController::class, 'handleWebhook'])->name('handleWebhook');
+// // //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+// Route::post(env('TELEGRAM_BOT_TOKEN') . '/webhook', [TelegramController::class, 'handleWebhook'])->name('handleWebhook');
+// // //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+// Route::get('/telegram/handle', [TelegramController::class, 'handleRequest'])->name('handleRequest');
+// // //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+// Route::post('/post/telegram', [TelegramController::class, 'postToGroup'])->name('postToGroup');
+// // //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+// Route::get('/telegram/show/menu', [TelegramController::class, 'showMenu'])->name('showMenu');
+// // //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+// Route::get('/telegram/send/message', [TelegramController::class, 'sendMessage'])->name('sendMessage');
+// // //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+// Route::get('/telegram/handle', [TelegramController::class, 'handle'])->name('handle');
+// // //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+// Route::get('/telegram/handle/webhook', [TelegramController::class, 'handleWebhook'])->name('handleWebhook');
+// // //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+// Route::get('/telegram/private/chat', [TelegramController::class, 'handlePrivateChat'])->name('handlePrivateChat');
+// // //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+// Route::get('/telegram/group/chat', [TelegramController::class, 'handleGroupChat'])->name('handleGroupChat');
+// // //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+// Route::get('/telegram/channel', [TelegramController::class, 'handleChannel'])->name('handleChannel');
+// // //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+// Route::get('/telegram/unknown/chat/type', [TelegramController::class, 'handleUnknownChatType'])->name('handleUnknownChatType');
 // //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 Route::resource('replies', RepliesController::class);
 // //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++

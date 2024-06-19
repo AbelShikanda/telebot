@@ -3,14 +3,14 @@
 namespace App\Console\Commands;
 
 use App\Models\Posts;
-use Illuminate\Console\Command;
-use Telegram\Bot\Api;
+use App\Services\TelegramService;
+use CURLFile;
 use Exception;
-use Telegram\Bot\FileUpload\InputFile;
+use Illuminate\Console\Command;
 
 class PostToTelegram extends Command
 {
-    protected $telegram;
+    protected $telegramService;
 
     /**
      * The name and signature of the console command.
@@ -34,7 +34,7 @@ class PostToTelegram extends Command
     public function __construct()
     {
         parent::__construct();
-        $this->telegram = new Api(env('TELEGRAM_BOT_TOKEN'));
+        $this->telegramService = new TelegramService;
     }
 
     /**
@@ -47,46 +47,39 @@ class PostToTelegram extends Command
         try {
             // Fetch a random post from the database
             $post = Posts::inRandomOrder()->first();
-
-            if ($post) {
+            if ($post->image) {
                 // Define the array of chat IDs
-                $chatIds = config('telegram.chat_ids', []);
-
-                // Check if there are chat IDs configured
-                if (empty($chatIds)) {
-                    throw new Exception('No Telegram chat IDs configured.');
-                }
-
+                $chatIds = explode(',', env('CHAT_ID', ''));
                 // Iterate over each chat ID and send the post
                 foreach ($chatIds as $chatId) {
-                    // Check if the post has an image
+                    $chatId = trim($chatId); // Trim any whitespace
                     if ($post->image) {
                         $caption = trim($post->caption);
                         $image = trim($post->image);
-                        
+                        $imageUrl = asset('storage/app/public/posts/' . $image);
                         // Ensure $post->caption is not empty
-                        $caption = !empty($post->caption) ? $post->caption : 'No caption provided';
-
-                        $this->telegram->sendPhoto([
+                        $caption = trim($post->caption) ?: 'No caption provided';
+                        $this->telegramService->sendPhoto([
                             'chat_id' => $chatId,
-                            'photo' => new InputFile(asset('storage/app/public/posts/' . $image)),
-                            'caption' => $caption ?: 'No caption provided',
+                            'photo' => new CURLFile($imageUrl),
+                            'caption' => $caption,
                         ]);
                     } else {
-                        // Send the text content if there's no image
-                        $text = !empty($post->caption) ? $post->caption : 'No content provided';
-                        $this->telegram->sendMessage([
+                        
+                        $text = trim($post->caption) ?: 'No content provided';
+                        $this->telegramService->sendMessage([
                             'chat_id' => $chatId,
-                            'text' => $text ?: 'No caption provided',
+                            'text' => $text,
                         ]);
                     }
                 }
-                $this->info('Random post sent to Telegram groups successfully!');
+                return 0;
             } else {
-                $this->warn('No posts available to send.');
+                return 0;
             }
         } catch (Exception $e) {
-            $this->error('Error sending post to Telegram: ' . $e->getMessage());
+            $this->error('There was an error sending post to Telegram: ' . $e->getMessage());
+            return 1;
         }
     }
 }
