@@ -61,28 +61,11 @@ class TelegramService
         return $this->sendRequest($url, $params);
     }
 
-    // protected function sendRequest($url, $params = [])
-    // {
-    //     $ch = curl_init();
-    //     curl_setopt($ch, CURLOPT_URL, $url);
-    //     curl_setopt($ch, CURLOPT_POST, 1);
-    //     curl_setopt($ch, CURLOPT_POSTFIELDS, $params);
-    //     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    //     curl_setopt($ch, CURLOPT_HTTPHEADER, [
-    //         'Content-Type: multipart/form-data'
-    //     ]);
-
-    //     $response = curl_exec($ch);
-    //     curl_close($ch);
-
-    //     return $response;
-    // }
-
     protected function sendRequest($url, $params = [])
     {
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);
-        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_POST, 1);
         curl_setopt($ch, CURLOPT_POSTFIELDS, $params);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_HTTPHEADER, [
@@ -90,21 +73,38 @@ class TelegramService
         ]);
 
         $response = curl_exec($ch);
-
-        // if (curl_errno($ch)) {
-        //     $error_msg = curl_error($ch);
-        //     curl_close($ch);
-        //     throw new Exception("cURL Error: $error_msg");
-        // }
-
-        // $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-        // if ($http_code >= 400) {
-        //     curl_close($ch);
-        //     throw new Exception("HTTP Error: Received status code $http_code. Response: $response");
-        // }
-
         curl_close($ch);
 
         return $response;
     }
+
+    // protected function sendRequest($url, $params = [])
+    // {
+    //     $ch = curl_init();
+    //     curl_setopt($ch, CURLOPT_URL, $url);
+    //     curl_setopt($ch, CURLOPT_POST, true);
+    //     curl_setopt($ch, CURLOPT_POSTFIELDS, $params);
+    //     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    //     curl_setopt($ch, CURLOPT_HTTPHEADER, [
+    //         'Content-Type: multipart/form-data'
+    //     ]);
+
+    //     $response = curl_exec($ch);
+
+    //     // if (curl_errno($ch)) {
+    //     //     $error_msg = curl_error($ch);
+    //     //     curl_close($ch);
+    //     //     throw new Exception("cURL Error: $error_msg");
+    //     // }
+
+    //     // $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    //     // if ($http_code >= 400) {
+    //     //     curl_close($ch);
+    //     //     throw new Exception("HTTP Error: Received status code $http_code. Response: $response");
+    //     // }
+
+    //     curl_close($ch);
+
+    //     return $response;
+    // }
 }
