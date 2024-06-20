@@ -17,8 +17,8 @@ class CreateTelegramMessagesTable extends Migration
             $table->bigIncrements('id');
             $table->bigInteger('message_id')->unsigned()->unique();
 
-            $table->foreignId('chat_id')->constrained('telegram_chats')->onDelete('cascade')->onUpdate('cascade');
-            $table->foreignId('user_id')->constrained('telegram_users')->onDelete('cascade')->onUpdate('cascade');
+            $table->foreignId('chat_id')->constrained('telegram_chats')->onDelete('cascade')->onUpdate('cascade')->signed();
+            $table->foreignId('user_id')->constrained('telegram_users')->onDelete('cascade')->onUpdate('cascade')->signed();
             
             $table->text('text')->nullable();
             $table->boolean('is_reply')->default(false); // Indicates if the message is a reply

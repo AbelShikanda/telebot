@@ -27,6 +27,10 @@
                         <label>Reply</label>
                         <textarea name="reply" class="form-control" cols="30" rows="10"></textarea>
                     </div>
+                    <div class="form-group">
+                        <label>Default Reply</label>
+                        <textarea name="groupreply" class="form-control" cols="30" rows="10"></textarea>
+                    </div>
                     <button type="submit" class="btn btn-primary">Submit</button>
                 </form>
             </div>

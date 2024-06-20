@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\GroupReplies;
 use App\Models\Replies;
+use App\Models\Spam;
 use App\Models\TelegramUsers;
 
 class TelegramChatHandler
@@ -39,7 +40,7 @@ class TelegramChatHandler
         ]);
     }
 
-    public function handleGroupChat($chatId, $userId, $text, $isReply, $messageId)
+    public function handleGroupChat($chatId, $userId, $text, $isReply, $messageId, $message)
     {
         /// Get bot's username and ID
         $botUsername = env('TELEGRAM_BOT_USERNAME');
@@ -49,7 +50,7 @@ class TelegramChatHandler
         // $text = $message->getText();
 
         // Define unwanted content keywords
-        $unwantedKeywords = ['spam', 'unwanted', 'badword']; // Add your own keywords
+        $unwantedKeywords = Spam::pluck('keywords')->toArray();
 
         // Check if the message contains unwanted content
         $containsUnwantedContent = false;
@@ -80,19 +81,34 @@ class TelegramChatHandler
             // Check if the message is a reply to a bot's message
             $isReplyToBot = $replyToMessageId === $botId;
             $reply = $this->generateGroupReply($text);
+            $groupreply = $reply['response'];
+            $defaultreply = $reply['defaultResponse'];
             $this->telegramService->sendMessage([
                 'chat_id' => $chatId,
-                'text' => $reply,
-                'reply_to_message_id' => $messageId
+                'text' => $groupreply,
+                'reply_to_message_id' => $message['reply_to_message']['message_id'] ?? '',
+            ]);
+            $this->telegramService->sendMessage([
+                'chat_id' => $userId,
+                'text' => $defaultreply,
             ]);
         }
         // If bot is mentioned or the message is a reply to a bot's message
         if ($botMentioned) {
             $reply = $this->generateGroupReply($text);
+
+            // dd($userId);
+            $groupreply = $reply['response'];
+            $defaultreply = $reply['defaultResponse'];
             $this->telegramService->sendMessage([
                 'chat_id' => $chatId,
-                'text' => $reply,
-                'reply_to_message_id' => $messageId
+                'text' => $groupreply,
+                'reply_to_message_id' => $message['reply_to_message']['message_id'] ?? '',
+            ]);
+            $this->telegramService->sendMessage([
+                'chat_id' => $userId,
+                'text' => $defaultreply,
+                'reply_to_message_id' => $message['reply_to_message']['message_id'] ?? '',
             ]);
         }
     }
@@ -112,7 +128,12 @@ class TelegramChatHandler
         $user->save();
 
         $warningText = "Warning: Unwanted content detected. This is warning #" . $user->warning_count;
-        
+
+        $this->telegramService->deleteMessage([
+            'chat_id' => $chatId,
+            'message_id' => $messageId
+        ]);
+
         $this->telegramService->sendMessage([
             'chat_id' => $chatId,
             'text' => $warningText,
@@ -137,21 +158,20 @@ class TelegramChatHandler
             $untilDate = now()->addMonth()->timestamp; // Add one month to the current date
         }
 
-        // $this->telegram->restrictChatMember([
-        //     'chat_id' => $chatId,
-        //     'user_id' => $userId,
-        //     'permissions' => [
-        //         'can_send_messages' => false,
-        //         'can_send_media_messages' => false,
-        //         'can_send_polls' => false,
-        //         'can_send_other_messages' => false,
-        //         'can_add_web_page_previews' => false,
-        //         'can_change_info' => false,
-        //         'can_invite_users' => false,
-        //         'can_pin_messages' => false
-        //     ],
-        //     'until_date' => $untilDate // Optional: specify a date until the restriction should be applied
-        // ]);
+        $this->telegramService->restrictChatMember([
+            'chat_id' => $chatId,
+            'user_id' => $userId,
+            'permissions' => [
+                'can_send_messages' => false,
+                'can_send_media_messages' => false,
+                'can_send_other_messages' => false,
+                'can_add_web_page_previews' => false,
+                'can_change_info' => false,
+                'can_invite_users' => false,
+                'can_pin_messages' => false
+            ],
+            'until_date' => $untilDate // Optional: specify a date until the restriction should be applied
+        ]);
     }
 
     private function generateGroupReply($text)
@@ -164,17 +184,25 @@ class TelegramChatHandler
         foreach ($replies as $dbReply) {
             $keyword = strtolower($dbReply->keyword);
             $response = $dbReply->response;
+            $defaultResponse = $dbReply->default_response;
 
             if (strpos($normalizedText, $keyword) !== false) {
-                return $response;
+                return [
+                    'response' => $response,
+                    'defaultResponse' => $defaultResponse
+                ];
             }
         }
 
         // Default reply if no keyword is matched
         $defaultReply = "I didn't understand that. Can you please be more specific?";
+        $defaultPrivateReply = "I am realy sorry, so you mind repeating the quw=estion?";
 
-        // Return default reply if no keywords match
-        return $defaultReply;
+        // Always return an array
+        return [
+            'response' => $defaultReply,
+            'defaultResponse' => $defaultPrivateReply
+        ];
     }
 
     public function handleChannel($chatId, $text)

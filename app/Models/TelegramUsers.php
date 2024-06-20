@@ -18,16 +18,10 @@ class TelegramUsers extends Model
         'last_warning_at', 
         'joined_at', 
         'message_count', 
-        'is_admin',
     ];
 
-    public function chat()
+    public function messages()
     {
-        return $this->belongsTo(TelegramChats::class, 'chat_id', 'chat_id');
-    }
-
-    public function user()
-    {
-        return $this->belongsTo(TelegramUsers::class, 'user_id', 'user_id');
+        return $this->hasMany(TelegramMessages::class, 'user_id', 'user_id');
     }
 }

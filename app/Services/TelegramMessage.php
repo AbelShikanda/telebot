@@ -33,6 +33,11 @@ class TelegramMessage
         return $this->update['message']['chat']['type'];
     }
 
+    public function getChatName(): string
+    {
+        return $this->update['message']['chat']['title'] ?? '';
+    }
+
     public function getUserId(): int
     {
         return $this->update['message']['from']['id'];

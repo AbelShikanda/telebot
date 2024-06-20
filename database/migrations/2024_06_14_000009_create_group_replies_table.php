@@ -17,6 +17,7 @@ class CreateGroupRepliesTable extends Migration
             $table->id();
             $table->string('keyword');
             $table->text('response');
+            $table->text('default_response');
             $table->timestamps();
         });
     }

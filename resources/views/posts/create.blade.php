@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-    <div class="container" style="margin-top: 150px">
+    <div class="container" style="margin-top: 151px">
 
         @if (count($errors) > 0)
             <div class="alert alert-danger col-md-8 offset-md-3">

@@ -23,7 +23,6 @@ class CreateTelegramUsersTable extends Migration
             $table->timestamp('joined_at')->useCurrent();
             $table->timestamp('last_warning_at')->nullable();
             $table->integer('message_count')->default(1);
-            $table->boolean('is_admin')->default(false);
             $table->timestamps();
         });
     }

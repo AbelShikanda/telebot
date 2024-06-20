@@ -45,6 +45,7 @@ class GroupRepliesController extends Controller
         $replies = $request->validate([
             'keywords' => 'required',
             'reply' => 'required',
+            'groupreply' => 'required',
         ]);
         // dd($replies);
         
@@ -55,6 +56,7 @@ class GroupRepliesController extends Controller
             $replies = GroupReplies::create([
                 'keyword' => $request->keywords,
                 'response' => $request->reply,
+                'default_response' => $request->groupreply,
             ]);
 
 
@@ -112,6 +114,7 @@ class GroupRepliesController extends Controller
         $request->validate([
             'keywords' => '',
             'reply' => '',
+            'groupreply' => '',
         ]);
         // dd($replies);
         
@@ -127,6 +130,10 @@ class GroupRepliesController extends Controller
                 if ($request->reply) {
                     $reply = $request->reply;
                     $replies->response = $reply;
+                }
+                if ($request->groupreply) {
+                    $groupreply = $request->groupreply;
+                    $replies->default_response = $groupreply;
                 }
                 $replies->save();
             }

@@ -25,6 +25,7 @@
                         <th scope="row">1</th>
                         <td>{{ $reply->keyword }}</td>
                         <td>{{ $reply->response }}</td>
+                        <td>{{ $reply->default_respose }}</td>
                         <td>
                             <a href="{{ route('groupreplies.edit', $reply->id) }}" class="btn btn-warning">Edit replies</a>
                         </td>

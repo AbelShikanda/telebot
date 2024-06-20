@@ -19,15 +19,13 @@ class TelegramMessages extends Model
         'reply_to_message_id', 
     ];
 
-    public function chats()
+    public function chat()
     {
-        return $this->belongsToMany(TelegramChats::class, 'telegram_chat_user', 'user_id', 'chat_id')
-                    ->withPivot('is_admin')
-                    ->withTimestamps();
+        return $this->belongsTo(TelegramChats::class, 'chat_id', 'chat_id');
     }
 
-    public function messages()
+    public function user()
     {
-        return $this->hasMany(TelegramMessages::class, 'user_id', 'user_id');
+        return $this->belongsTo(TelegramUsers::class, 'user_id', 'user_id');
     }
 }

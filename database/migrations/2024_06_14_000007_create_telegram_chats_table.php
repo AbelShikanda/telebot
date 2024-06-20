@@ -17,6 +17,7 @@ class CreateTelegramChatsTable extends Migration
             $table->bigIncrements('id');
             $table->bigInteger('chat_id')->unique();
             $table->string('type');
+            $table->string('title');
             $table->timestamps();
         });
     }

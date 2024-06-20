@@ -12,17 +12,11 @@ class TelegramChats extends Model
     protected $fillable = [
         'chat_id', 
         'type', 
+        'title', 
     ];
 
     public function messages()
     {
         return $this->hasMany(TelegramMessages::class, 'chat_id', 'chat_id');
-    }
-
-    public function users()
-    {
-        return $this->belongsToMany(TelegramUsers::class, 'telegram_chat_user', 'chat_id', 'user_id')
-                    ->withPivot('is_admin')
-                    ->withTimestamps();
     }
 }

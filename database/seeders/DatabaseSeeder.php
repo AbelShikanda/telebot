@@ -15,9 +15,9 @@ class DatabaseSeeder extends Seeder
     {
         // \App\Models\User::factory(10)->create();
         $this->call([
-            TelegramUserSeeder::class,
-            TelegramChatSeeder::class,
-            TelegramMessageSeeder::class,
+            GroupRepliesSeeder::class,
+            PrivateRepliesSeeder::class,
+            SpamFilterSeeder::class,
         ]);
     }
 }

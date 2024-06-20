@@ -43,6 +43,7 @@ class TelegramController extends Controller
             $message = $update->getMessage();
             $messageId = $update->getMessageId();
             $chatId = $update->getChatId();
+            $chatName = $update->getChatName();
             $text = $update->getText();
             $chatType = $update->getChatType();
             $userId = $update->getUserId();
@@ -50,9 +51,20 @@ class TelegramController extends Controller
             $firstName = $update->getFirstName();
             $lastName = $update->getLastName();
             $isReply = $update->getReplyToMessage();
-            $joined_at = now();
-            $warning_count = 0;
-            $last_warning_at = null;
+
+            // Log chat, user, and message details
+            $this->telegramService->logDetails([
+                'chat_id' => $chatId,
+                'chat_type' => $chatType,
+                'title' => $chatName,
+                'user_id' => $userId,
+                'username' => $username,
+                'first_name' => $firstName,
+                'last_name' => $lastName,
+                'message' => $message,
+                'is_reply' => $isReply,
+                'text' => $text,
+            ]);
 
             switch ($chatType) {
                 case 'private':
@@ -60,7 +72,7 @@ class TelegramController extends Controller
                     break;
                 case 'group':
                 case 'supergroup':
-                    $this->chatHandler->handleGroupChat($chatId, $userId, $text, $isReply, $messageId);
+                    $this->chatHandler->handleGroupChat($chatId, $userId, $text, $isReply, $messageId, $message);
                     break;
                 case 'channel':
                     $this->chatHandler->handleChannel($chatId, $text);
