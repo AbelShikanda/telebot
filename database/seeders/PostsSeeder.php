@@ -14,7 +14,7 @@ class PostsSeeder extends Seeder
      */
     public function run()
     {
-        DB::table('posts')->insert([
+        DB::table('group_links')->insert([
             [
                 'image' => 'telegram',
                 'caption' => 'join a telegram link => https://t.me/+FYxHz_QI5gAzOGQ8',
