@@ -100,7 +100,7 @@ jobs:
           username: ${{ secrets.FTP_SITES_USER }}
           password: ${{ secrets.FTP_SITES_PASSWORD }}
           port: ${{ secrets.SSH_SITES_PORT }}
-          envs: GITHUB_SHA,SOURCE_ASSET_DIR,SOURCE_CSS_DIR,SOURCE_JS_DIR,DEST_ASSET_DIR,DEST_CSS_DIR,DEST_JS_DIR,DEST_PARENT_DIR
+          envs: GITHUB_SHA,SOURCE_ASSET_DIR,SOURCE_CSS_DIR,SOURCE_JS_DIR,DEST_ASSET_DIR,DEST_CSS_DIR,DEST_JS_DIR,DEST_PARENT_DIR,SOURCE_DATA_DIR,SOURCE_DIST_DIR,SOURCE_FONTS_DIR,DEST_DATA_DIR,DEST_DIST_DIR,DEST_FONTS_DIR
           script: |
             mkdir -p "/home/printsh1/print.printshopeld/release/${GITHUB_SHA}"
             tar xzf /home/printsh1/print.printshopeld/artifacts/${GITHUB_SHA}.tar.gz -C "/home/printsh1/print.printshopeld/release/${GITHUB_SHA}"
