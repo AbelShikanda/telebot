@@ -22,7 +22,7 @@ class TelegramChatHandler
 
         $normalizedText = strtolower(trim($text));
 
-        $reply = "I did not understand your message please try asking one question at a time :)";
+        $reply = "I am realy sorry,  I did not understand your message contact me on whatsapp for more details. Do you have any further questions?";
 
         foreach ($replies as $dbReply) {
             $keyword = strtolower($dbReply->keyword);
@@ -196,7 +196,7 @@ class TelegramChatHandler
 
         // Default reply if no keyword is matched
         $defaultReply = "I didn't understand that. Can you please be more specific?";
-        $defaultPrivateReply = "I am realy sorry, so you mind repeating the quw=estion?";
+        $defaultPrivateReply = "I am realy sorry,  I did not understand your message contact me on whatsapp for more details. Do you have any further questions?";
 
         // Always return an array
         return [
