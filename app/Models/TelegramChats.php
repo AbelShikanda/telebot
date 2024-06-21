@@ -8,6 +8,8 @@ use Illuminate\Database\Eloquent\Model;
 class TelegramChats extends Model
 {
     use HasFactory;
+    
+    protected $table = 'telegram_chats';
 
     protected $fillable = [
         'chat_id', 
@@ -17,6 +19,6 @@ class TelegramChats extends Model
 
     public function messages()
     {
-        return $this->hasMany(TelegramMessages::class, 'chat_id', 'chat_id');
+        return $this->hasMany(TelegramMessages::class, 'chat_id', 'id');
     }
 }

@@ -9,6 +9,8 @@ class TelegramMessages extends Model
 {
     use HasFactory;
 
+    protected $table = 'telegram_messages';
+
     protected $fillable = [
         'message_id', 
         'chat_id', 
@@ -21,11 +23,11 @@ class TelegramMessages extends Model
 
     public function chat()
     {
-        return $this->belongsTo(TelegramChats::class, 'chat_id', 'chat_id');
+        return $this->belongsTo(TelegramChats::class, 'chat_id', 'id');
     }
 
     public function user()
     {
-        return $this->belongsTo(TelegramUsers::class, 'user_id', 'user_id');
+        return $this->belongsTo(TelegramUsers::class, 'user_id', 'id');
     }
 }

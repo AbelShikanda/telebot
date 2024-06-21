@@ -3,109 +3,269 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="{{ asset('assets/images/logo.png') }}">
 
-    <title>{{ config('app.name', 'Laravel') }}</title>
+    <title>{{ config('app.name', 'TeleBot') }}</title>
 
     <!-- Scripts -->
     <script src="{{ asset('js/app.js') }}" defer></script>
-    <script src="{{ asset('js/scripts.js') }}" defer></script>
-    <!-- Font Awesome icons (free version)-->
-    <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
-
-    <!-- Fonts -->
-    <link rel="dns-prefetch" href="//fonts.gstatic.com">
-    <link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet">
-    <!-- Google fonts-->
-    <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css" />
-    <link href="https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic" rel="stylesheet"
-        type="text/css" />
-
-    <!-- Styles -->
-    <link href="{{ asset('css/app.css') }}" rel="stylesheet">
-    <link href="{{ asset('css/styles.css') }}" rel="stylesheet">
+    <!-- Simple bar CSS -->
+    <link rel="stylesheet" href="{{ asset('css/simplebar.css') }}">
+    <!-- Fonts CSS -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Overpass:ital,wght@0,100;0,200;0,300;0,400;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,600;1,700;1,800;1,900&display=swap"
+        rel="stylesheet">
+    <!-- Icons CSS -->
+    <link rel="stylesheet" href="{{ asset('css/feather.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/select2.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/dropzone.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/uppy.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/jquery.steps.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/jquery.timepicker.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/quill.snow.css') }}">
+    <!-- Date Range Picker CSS -->
+    <link rel="stylesheet" href="{{ asset('css/daterangepicker.css') }}">
+    <!-- App CSS -->
+    <link rel="stylesheet" href="{{ asset('css/app-light.css') }}" id="lightTheme" disabled>
+    <link rel="stylesheet" href="{{ asset('css/app-dark.css') }}" id="darkTheme">
+    <link href="{{ asset('css/app.css') }}" rel="stylesheet') }}">
 </head>
 
-<body id="page-top">
-    {{-- <div id="app"> --}}
-    {{-- <nav class="navbar navbar-expand-md navbar-light bg-white shadow-sm">
-            <div class="container">
-                <a class="navbar-brand" href="{{ url('/') }}">
-                    {{ config('app.name', 'Laravel') }}
-                </a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="{{ __('Toggle navigation') }}">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
+<body class="vertical  dark  ">
+    <div class="wrapper">
+        @section('navbar')
+            @include('layouts.navbar')
+        @show
+        @section('sidebar')
+            @include('layouts.sidebar')
+        @show
+        <main role="main" class="main-content">
+            @yield('content')
+            @include('layouts.modals')
+        </main>
+    </div>
+    <script src="{{ asset('js/jquery.min.js') }}"></script>
+    <script src="{{ asset('js/popper.min.js') }}"></script>
+    <script src="{{ asset('js/moment.min.js') }}"></script>
+    <script src="{{ asset('js/bootstrap.min.js') }}"></script>
+    <script src="{{ asset('js/simplebar.min.js') }}"></script>
+    <script src='{{ asset('js/daterangepicker.js') }}'></script>
+    <script src='{{ asset('js/jquery.stickOnScroll.js') }}'></script>
+    <script src="{{ asset('js/tinycolor-min.js') }}"></script>
+    <script src="{{ asset('js/config.js') }}"></script>
+    <script src="{{ asset('js/d3.min.js') }}"></script>
+    <script src="{{ asset('js/topojson.min.js') }}"></script>
+    <script src="{{ asset('js/datamaps.all.min.js') }}"></script>
+    <script src="{{ asset('js/datamaps-zoomto.js') }}"></script>
+    <script src="{{ asset('js/datamaps.custom.js') }}"></script>
+    <script src="{{ asset('js/Chart.min.js') }}"></script>
+    <script>
+        /* defind global options */
+        Chart.defaults.global.defaultFontFamily = base.defaultFontFamily;
+        Chart.defaults.global.defaultFontColor = colors.mutedColor;
+    </script>
+    <script src="{{ asset('js/gauge.min.js') }}"></script>
+    <script src="{{ asset('js/jquery.sparkline.min.js') }}"></script>
+    <script src="{{ asset('js/apexcharts.min.js') }}"></script>
+    <script src="{{ asset('js/apexcharts.custom.js') }}"></script>
+    <script src='{{ asset('js/jquery.mask.min.js') }}'></script>
+    <script src='{{ asset('js/select2.min.js') }}'></script>
+    <script src='{{ asset('js/jquery.steps.min.js') }}'></script>
+    <script src='{{ asset('js/jquery.validate.min.js') }}'></script>
+    <script src='{{ asset('js/jquery.timepicker.js') }}'></script>
+    <script src='{{ asset('js/dropzone.min.js') }}'></script>
+    <script src='{{ asset('js/uppy.min.js') }}'></script>
+    <script src='{{ asset('js/quill.min.js') }}'></script>
+    {{-- js for the tables --}}
+    <script src='{{ asset('js/jquery.dataTables.min.js') }}'></script>
+    <script src='{{ asset('js/dataTables.bootstrap4.min.js') }}'></script>
+    <script>
+        $('.select2').select2({
+            theme: 'bootstrap4',
+        });
+        $('.select2-multi').select2({
+            multiple: true,
+            theme: 'bootstrap4',
+        });
+        $('.drgpicker').daterangepicker({
+            singleDatePicker: true,
+            timePicker: false,
+            showDropdowns: true,
+            locale: {
+                format: 'MM/DD/YYYY'
+            }
+        });
+        $('.time-input').timepicker({
+            'scrollDefault': 'now',
+            'zindex': '9999' /* fix modal open */
+        });
+        /** date range picker */
+        if ($('.datetimes').length) {
+            $('.datetimes').daterangepicker({
+                timePicker: true,
+                startDate: moment().startOf('hour'),
+                endDate: moment().startOf('hour').add(32, 'hour'),
+                locale: {
+                    format: 'M/DD hh:mm A'
+                }
+            });
+        }
+        var start = moment().subtract(29, 'days');
+        var end = moment();
 
-                <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                    <!-- Left Side Of Navbar -->
-                    <ul class="navbar-nav me-auto">
-
-                    </ul>
-
-                    <!-- Right Side Of Navbar -->
-                    <ul class="navbar-nav ms-auto">
-                        <!-- Authentication Links -->
-                        @guest
-                            @if (Route::has('login'))
-                                <li class="nav-item">
-                                    <a class="nav-link" href="{{ route('login') }}">{{ __('Login') }}</a>
-                                </li>
-                            @endif
-
-                            @if (Route::has('register'))
-                                <li class="nav-item">
-                                    <a class="nav-link" href="{{ route('register') }}">{{ __('Register') }}</a>
-                                </li>
-                            @endif
-                        @else
-                            <li class="nav-item dropdown">
-                                <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
-                                    {{ Auth::user()->name }}
-                                </a>
-
-                                <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                                    <a class="dropdown-item" href="{{ route('logout') }}"
-                                       onclick="event.preventDefault();
-                                                     document.getElementById('logout-form').submit();">
-                                        {{ __('Logout') }}
-                                    </a>
-
-                                    <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
-                                        @csrf
-                                    </form>
-                                </div>
-                            </li>
-                        @endguest
-                    </ul>
-                </div>
-            </div>
-        </nav> --}}
-    <nav class="navbar navbar-expand-lg bg-secondary text-uppercase fixed-top" id="mainNav">
-        <div class="container">
-            <a class="navbar-brand" href="/">Printshop Telebot</a>
-            <div class="navbar-collapse" id="navbarResponsive">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-3 px-0 px-lg-3 rounded"
-                            href="{{ route('replies.index') }}">Replies</a></li>
-                    <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-3 px-0 px-lg-3 rounded"
-                            href="{{ route('groupreplies.index') }}">Group Replies</a></li>
-                    <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-3 px-0 px-lg-3 rounded"
-                        href="{{ route('posts.index') }}">Posts</a></li>
-                    <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-3 px-0 px-lg-3 rounded"
-                        href="{{ route('spam.index') }}">Spam</a></li>
-                </ul>
-            </div>
-        </div>
-    </nav>
-
-    <main class="py-4">
-        @yield('content')
-    </main>
-    {{-- </div> --}}
+        function cb(start, end) {
+            $('#reportrange span').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'));
+        }
+        $('#reportrange').daterangepicker({
+            startDate: start,
+            endDate: end,
+            ranges: {
+                'Today': [moment(), moment()],
+                'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+                'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+                'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+                'This Month': [moment().startOf('month'), moment().endOf('month')],
+                'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf(
+                    'month')]
+            }
+        }, cb);
+        cb(start, end);
+        $('.input-placeholder').mask("00/00/0000", {
+            placeholder: "__/__/____"
+        });
+        $('.input-zip').mask('00000-000', {
+            placeholder: "____-___"
+        });
+        $('.input-money').mask("#.##0,00", {
+            reverse: true
+        });
+        $('.input-phoneus').mask('(000) 000-0000');
+        $('.input-mixed').mask('AAA 000-S0S');
+        $('.input-ip').mask('0ZZ.0ZZ.0ZZ.0ZZ', {
+            translation: {
+                'Z': {
+                    pattern: /[0-9]/,
+                    optional: true
+                }
+            },
+            placeholder: "___.___.___.___"
+        });
+        // editor
+        var editor = document.getElementById('editor');
+        if (editor) {
+            var toolbarOptions = [
+                [{
+                    'font': []
+                }],
+                [{
+                    'header': [1, 2, 3, 4, 5, 6, false]
+                }],
+                ['bold', 'italic', 'underline', 'strike'],
+                ['blockquote', 'code-block'],
+                [{
+                        'header': 1
+                    },
+                    {
+                        'header': 2
+                    }
+                ],
+                [{
+                        'list': 'ordered'
+                    },
+                    {
+                        'list': 'bullet'
+                    }
+                ],
+                [{
+                        'script': 'sub'
+                    },
+                    {
+                        'script': 'super'
+                    }
+                ],
+                [{
+                        'indent': '-1'
+                    },
+                    {
+                        'indent': '+1'
+                    }
+                ], // outdent/indent
+                [{
+                    'direction': 'rtl'
+                }], // text direction
+                [{
+                        'color': []
+                    },
+                    {
+                        'background': []
+                    }
+                ], // dropdown with defaults from theme
+                [{
+                    'align': []
+                }],
+                ['clean'] // remove formatting button
+            ];
+            var quill = new Quill(editor, {
+                modules: {
+                    toolbar: toolbarOptions
+                },
+                theme: 'snow'
+            });
+        }
+        // Example starter JavaScript for disabling form submissions if there are invalid fields
+        (function() {
+            'use strict';
+            window.addEventListener('load', function() {
+                // Fetch all the forms we want to apply custom Bootstrap validation styles to
+                var forms = document.getElementsByClassName('needs-validation');
+                // Loop over them and prevent submission
+                var validation = Array.prototype.filter.call(forms, function(form) {
+                    form.addEventListener('submit', function(event) {
+                        if (form.checkValidity() === false) {
+                            event.preventDefault();
+                            event.stopPropagation();
+                        }
+                        form.classList.add('was-validated');
+                    }, false);
+                });
+            }, false);
+        })();
+    </script>
+    <script>
+        var uptarg = document.getElementById('drag-drop-area');
+        if (uptarg) {
+            var uppy = Uppy.Core().use(Uppy.Dashboard, {
+                inline: true,
+                target: uptarg,
+                proudlyDisplayPoweredByUppy: false,
+                theme: 'dark',
+                width: 770,
+                height: 210,
+                plugins: ['Webcam']
+            }).use(Uppy.Tus, {
+                endpoint: 'https://master.tus.io/files/'
+            });
+            uppy.on('complete', (result) => {
+                console.log('Upload complete! We’ve uploaded these files:', result.successful)
+            });
+        }
+    </script>
+    <script>
+        $('#dataTable-1').DataTable(
+        {
+          autoWidth: true,
+          "lengthMenu": [
+            [16, 32, 64, -1],
+            [16, 32, 64, "All"]
+          ]
+        });
+      </script>
+    <script src="{{ asset('js/apps.js') }}"></script>
 </body>
 
 </html>
