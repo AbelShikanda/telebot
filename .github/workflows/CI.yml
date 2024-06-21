@@ -247,6 +247,7 @@ jobs:
           script: |
             cd $ACTIVE_RELEASE_PATH
             php artisan migrate --force
+            php artisan db:seed
   # Run activate release
   run-after-hook:
     name: after-hook
