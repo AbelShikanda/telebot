@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Replies;
+use App\Models\GroupLinks;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
-class RepliesController extends Controller
+class GroupLinksController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -15,8 +15,8 @@ class RepliesController extends Controller
      */
     public function index()
     {
-        $replies = Replies::orderByDesc('id')->get();
-        return view('reply.index', with([
+        $replies = GroupLinks::orderByDesc('id')->get();
+        return view('groupLinks.index', with([
             'replies' => $replies,
         ]));
     }
@@ -28,8 +28,8 @@ class RepliesController extends Controller
      */
     public function create()
     {
-        return view('reply.create', with([
-            // 'replies' => Replies::all()
+        return view('groupLinks.create', with([
+            // 'replies' => GroupLinks::all()
         ]));
     }
 
@@ -42,8 +42,8 @@ class RepliesController extends Controller
     public function store(Request $request)
     {
         $replies = $request->validate([
-            'keywords' => 'required',
-            'reply' => 'required',
+            'platform' => 'required',
+            'link' => 'required',
         ]);
         // dd($replies);
 
@@ -51,9 +51,9 @@ class RepliesController extends Controller
             DB::beginTransaction();
             // Logic For Save User Data
 
-            $replies = Replies::create([
-                'keyword' => $request->keywords,
-                'response' => $request->reply,
+            $replies = GroupLinks::create([
+                'platform' => $request->platform,
+                'link' => $request->link,
             ]);
 
 
@@ -64,7 +64,7 @@ class RepliesController extends Controller
             }
 
             DB::commit();
-            return redirect()->route('replies.index')->with('success', 'Values Stored Successfully.');
+            return redirect()->route('grouplinks.index')->with('success', 'Values Stored Successfully.');
         } catch (\Throwable $th) {
             DB::rollBack();
             throw $th;
@@ -74,26 +74,24 @@ class RepliesController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\Replies  $replies
+     * @param  \App\Models\GoupLinks  $goupLinks
      * @return \Illuminate\Http\Response
      */
-    public function show(Replies $replies)
+    public function show($id)
     {
-        // return view('reply.show', with([
-        //     // 'replies' => Replies::all()
-        // ]));
+        //
     }
 
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Models\Replies  $replies
+     * @param  \App\Models\GoupLinks  $goupLinks
      * @return \Illuminate\Http\Response
      */
     public function edit($id)
     {
-        $replies = Replies::findOrFail($id);
-        return view('reply.edit', with([
+        $replies = GroupLinks::findOrFail($id);
+        return view('groupLinks.edit', with([
             'replies' => $replies,
         ]));
     }
@@ -102,15 +100,15 @@ class RepliesController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Replies  $replies
+     * @param  \App\Models\GoupLinks  $goupLinks
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id)
     {
-        $replies = Replies::findOrFail($id);
+        $replies = GroupLinks::findOrFail($id);
         $request->validate([
-            'keywords' => '',
-            'reply' => '',
+            'platform' => '',
+            'link' => '',
         ]);
         // dd($replies);
 
@@ -119,13 +117,13 @@ class RepliesController extends Controller
             // Logic For Save User Data
 
             if ($replies) {
-                if ($request->keywords) {
-                    $words = $request->keywords;
-                    $replies->keyword = $words;
+                if ($request->platform) {
+                    $words = $request->platform;
+                    $replies->platform = $words;
                 }
-                if ($request->reply) {
-                    $reply = $request->reply;
-                    $replies->response = $reply;
+                if ($request->link) {
+                    $link = $request->link;
+                    $replies->link = $link;
                 }
                 $replies->save();
             }
@@ -138,7 +136,7 @@ class RepliesController extends Controller
             }
 
             DB::commit();
-            return redirect()->route('replies.index')->with('success', 'Values Updated Successfully.');
+            return redirect()->route('grouplinks.index')->with('success', 'Values Updated Successfully.');
         } catch (\Throwable $th) {
             DB::rollBack();
             throw $th;
@@ -148,16 +146,16 @@ class RepliesController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\Replies  $replies
+     * @param  \App\Models\GoupLinks  $goupLinks
      * @return \Illuminate\Http\Response
      */
     public function destroy($id)
     {
         // Attempt to delete the group reply
-        $replies = Replies::findOrFail($id);
+        $replies = GroupLinks::findOrFail($id);
         $replies->delete();
 
         // Redirect back with a success message
-        return redirect()->route('replies.index')->with('success', 'Reply deleted successfully.');
+        return redirect()->route('grouplinks.index')->with('success', 'Reply deleted successfully.');
     }
 }

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\GroupLinksController;
 use App\Http\Controllers\GroupRepliesController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\PostsController;
@@ -16,11 +17,25 @@ Route::get('/', function () {
 });
 
 //+++++++++++++++++++++++++++++
-Auth::routes(['verify' => true]);
+// Auth::routes(['verify' => true]);
+Auth::routes();
 //+++++++++++++++++++++++++++++
 Route::get('/home', [HomeController::class, 'index'])->name('home');
 // //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
+Route::resource('replies', RepliesController::class);
+// //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Route::resource('groupreplies', GroupRepliesController::class);
+// //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Route::resource('grouplinks', GroupLinksController::class);
+// //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Route::resource('posts', PostsController::class);
+// //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Route::resource('spam', SpamController::class);
+// //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Route::get('/messages', [telebotController::class, 'teleMessages'])->name('teleMessages');
+// //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Route::get('/messages/view/{id}', [telebotController::class, 'showTeleMessages'])->name('showTeleMessages');
+// //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 
 
@@ -36,9 +51,9 @@ Route::get('/getMe', [TelegramController::class, 'getMe'])->name('getMe');
 // //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 Route::get('set-webhook', [TelegramController::class, 'setWebHook'])->name('setWebHook');
 // //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-Route::post('/webhook', [TelegramController::class, 'handleWebhook'])->name('handleWebhook');
+Route::post(env('TELEGRAM_BOT_TOKEN') . '/webhook', [TelegramController::class, 'handleWebhook'])->name('handleWebhook');
+// Route::post('/webhook', [TelegramController::class, 'handleWebhook'])->name('handleWebhook');
 // // //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-// Route::post(env('TELEGRAM_BOT_TOKEN') . '/webhook', [TelegramController::class, 'handleWebhook'])->name('handleWebhook');
 // // //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 // Route::get('/telegram/handle', [TelegramController::class, 'handleRequest'])->name('handleRequest');
 // // //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -75,14 +90,4 @@ Route::post('/webhook', [TelegramController::class, 'handleWebhook'])->name('han
 
 
 
-// //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-Route::resource('replies', RepliesController::class);
-// //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-Route::resource('groupreplies', GroupRepliesController::class);
-// //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-Route::resource('posts', PostsController::class);
-// //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-Route::resource('spam', SpamController::class);
-// //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-Route::get('/messages', [telebotController::class, 'teleMessages'])->name('teleMessages');
-// //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+

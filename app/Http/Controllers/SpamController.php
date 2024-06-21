@@ -15,7 +15,7 @@ class SpamController extends Controller
      */
     public function index()
     {
-        $replies = Spam::all();
+        $replies = Spam::orderByDesc('id')->get();
         return view('spam.index', with([
             'replies' => $replies,
         ]));
@@ -45,17 +45,17 @@ class SpamController extends Controller
             'keywords' => 'required',
         ]);
         // dd($replies);
-        
+
         try {
             DB::beginTransaction();
             // Logic For Save User Data
-            
+
             $replies = Spam::create([
-                'keyword' => $request->keywords,
+                'keywords' => $request->keywords,
             ]);
 
 
-            if(!$replies){
+            if (!$replies) {
                 DB::rollBack();
 
                 return back()->with('error', 'Something went wrong while saving user data');
@@ -63,8 +63,6 @@ class SpamController extends Controller
 
             DB::commit();
             return redirect()->route('spam.index')->with('success', 'Spam Stored Successfully.');
-
-
         } catch (\Throwable $th) {
             DB::rollBack();
             throw $th;
@@ -110,7 +108,7 @@ class SpamController extends Controller
             'keywords' => '',
         ]);
         // dd($replies);
-        
+
         try {
             DB::beginTransaction();
             // Logic For Save User Data
@@ -118,13 +116,13 @@ class SpamController extends Controller
             if ($replies) {
                 if ($request->keywords) {
                     $words = $request->keywords;
-                    $replies->keyword = $words;
+                    $replies->keywords = $words;
                 }
                 $replies->save();
             }
 
 
-            if(!$replies){
+            if (!$replies) {
                 DB::rollBack();
 
                 return back()->with('error', 'Something went wrong while saving user data');
@@ -132,8 +130,6 @@ class SpamController extends Controller
 
             DB::commit();
             return redirect()->route('spam.index')->with('success', 'Spam Updated Successfully.');
-
-
         } catch (\Throwable $th) {
             DB::rollBack();
             throw $th;
@@ -146,8 +142,13 @@ class SpamController extends Controller
      * @param  \App\Models\Spam  $spam
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Spam $spam)
+    public function destroy($id)
     {
-        //
+        // Attempt to delete the group reply
+        $spam = Spam::findOrFail($id);
+        $spam->delete();
+
+        // Redirect back with a success message
+        return redirect()->route('spam.index')->with('success', 'Reply deleted successfully.');
     }
 }

@@ -17,7 +17,7 @@
                 </a>
                 <ul class="collapse list-unstyled pl-4 w-100" id="dashboard">
                     <li class="nav-item">
-                        <a class="nav-link pl-3" href="#"><span
+                        <a class="nav-link pl-3" href="{{ url('/home') }}"><span
                                 class="ml-1 item-text">Analytics</span></a>
                     </li>
                 </ul>
@@ -66,7 +66,7 @@
                         <a class="nav-link pl-3" href="{{ route('posts.index') }}"><span class="ml-1 item-text">Product Post</span></a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link pl-3" href="#"><span class="ml-1 item-text">GroupLink Post</span></a>
+                        <a class="nav-link pl-3" href="{{ route('grouplinks.index') }}"><span class="ml-1 item-text">GroupLink Post</span></a>
                     </li>
                 </ul>
             </li>

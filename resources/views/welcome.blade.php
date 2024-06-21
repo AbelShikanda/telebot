@@ -5,7 +5,8 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Solid Template</title>
+    <link rel="icon" href="./assets/images/logo.png">
+    <title>TeleBot</title>
     <link href="https://fonts.googleapis.com/css?family=IBM+Plex+Sans:400,600" rel="stylesheet">
     <link rel="stylesheet" href="dist/css/style.css">
     <script src="https://unpkg.com/animejs@3.0.1/lib/anime.min.js"></script>
@@ -41,8 +42,10 @@
                             @else
                                 <p class="hero-paragraph">An innovative Telegram bot designed to facilitate a seamless and
                                     engaging marketing experience</p>
-                                <div class="hero-cta"><a class="button button-primary" href="{{ url('login') }}">Login</a><a
-                                        class="button" href="#">Get in Touch</a></div>
+                                <div class="hero-cta">
+                                    <a class="button button-primary" href="{{ url('login') }}">Login</a>
+                                    <aclass="button" href="#">Get in Touch</a>
+                                </div>
                             @endauth
                         </div>
                         <div class="hero-figure anime-element">

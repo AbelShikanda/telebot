@@ -4,16 +4,13 @@
     <div class="container-fluid">
         <div class="row justify-content-center">
             <div class="col-12">
-                <h2 class="page-title">Private chat responses</h2>
-                <p class="text-muted">Responses for the private interaction with the bot.</p>
+                <h2 class="page-title">Group links</h2>
+                <p class="text-muted">Links for all types of platfoms are allowed.</p>
                 @if (count($errors) > 0)
                     <div class="alert alert-danger col-md-8 offset-md-3">
-                        <strong>Whoops!</strong> There were some problems with your input.<br><br>
-                        <ul>
-                            @foreach ($errors->all() as $error)
-                                <li>{{ $error }}</li>
-                            @endforeach
-                        </ul>
+                        @foreach ($errors->all() as $error)
+                            {{ $error }}
+                        @endforeach
                     </div>
                 @endif
                 <div class="card-deck">
@@ -22,22 +19,23 @@
                             <strong class="card-title">Responses form</strong>
                         </div>
                         <div class="card-body">
-                            <form action="{{ route('replies.update', $replies->id) }}" method="POST">
+                            <form action="{{ route('grouplinks.update', $replies->id) }}" method="POST">
                                 @csrf
                                 @method('Patch')
                                 <div class="form-group row">
-                                    <label for="inputEmail3" class="col-sm-3 col-form-label">KeyWords</label>
+                                    <label for="inputEmail3" class="col-sm-3 col-form-label">Platform</label>
                                     <div class="col-sm-9">
-                                        <input type="text" class="form-control" name="keywords" id="inputEmail3" value="{{ $replies->keyword }}"
-                                            placeholder="Enter Keyword">
-                                        <small id="emailHelp" class="form-text text-muted">add any keywords you can think
+                                        <input type="text" class="form-control" name="platform" id="inputEmail3"
+                                            value="{{ $replies->platform }}" placeholder="Enter Keyword">
+                                        <small id="emailHelp" class="form-text text-muted">add any platform
                                             of</small>
                                     </div>
                                 </div>
                                 <div class="form-group row">
-                                    <label class="col-sm-3" for="exampleFormControlTextarea1">Group Reply</label>
+                                    <label class="col-sm-3" for="exampleFormControlTextarea1">Group Link</label>
                                     <div class="col-sm-9">
-                                        <textarea class="form-control" id="exampleFormControlTextarea1" rows="2" name="reply" placeholder="{{ $replies->response }}"></textarea>
+                                        <textarea class="form-control" id="exampleFormControlTextarea1" rows="2" name="link"
+                                            placeholder="{{ $replies->link }}"></textarea>
                                     </div>
                                 </div>
                                 <div class="form-group row mb-2 justify-content-center">
@@ -51,6 +49,3 @@
         </div> <!-- .row -->
     </div> <!-- .container-fluid -->
 @endsection
-
-
-

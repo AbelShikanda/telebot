@@ -2,12 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\TelegramChats;
 use App\Models\TelegramMessages;
-use App\Models\TelegramUsers;
-use App\Services\TelegramMessage;
-use Illuminate\Http\Request;
-use Telegram\Bot\Api;
 
 class telebotController extends Controller
 {
@@ -21,22 +16,30 @@ class telebotController extends Controller
     {
         $messages = TelegramMessages::with(['chat', 'user'])->get();
         // dd($messages);
-
         return view('telegram-components.telemessage', with([
             'messages' => $messages,
         ]));
     }
 
-    // /**
-    //  * Display the specified resource.
-    //  *
-    //  * @param  int  $id
-    //  * @return \Illuminate\Http\Response
-    //  */
-    // public function show($id)
-    // {
-    //     //
-    // }
+    /**
+     * Display the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function showTeleMessages($id)
+    {
+        $messages = TelegramMessages::with(['chat', 'user'])->find($id);
+        // dd($message);
+        // $messages = TelegramMessages::findOrFail($id)->with(['chat', 'user'])->first();
+        $threads = TelegramMessages::where('user_id', $messages->user_id)->get();
+
+        // dd($messages, $threads);
+        return view('telegram-components.showtelemessage', with([
+            'messages' => $messages,
+            'threads' => $threads,
+        ]));
+    }
 
     // /**
     //  * Show the form for editing the specified resource.

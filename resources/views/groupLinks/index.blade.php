@@ -4,8 +4,8 @@
     <div class="container-fluid">
         <div class="row justify-content-center">
             <div class="col-12">
-                <h2 class="mb-2 page-title">Spam</h2>
-                <a href="{{ route('spam.create') }}" class="btn btn-secondary">Create Spam</a>
+                <h2 class="mb-2 page-title">Group Links</h2>
+                <a href="{{ route('grouplinks.create') }}" class="btn btn-secondary">Create links</a>
                 <div class="pt-3">
                     @if (session()->has('message'))
                         <div class="alert alert-success">
@@ -23,7 +23,8 @@
                                     <thead>
                                         <tr>
                                             <th>#</th>
-                                            <th>Keywords</th>
+                                            <th scope="col">Platform</th>
+                                            <th scope="col">Link</th>
                                             <th>Action</th>
                                         </tr>
                                     </thead>
@@ -31,28 +32,29 @@
                                         @foreach ($replies as $reply)
                                             <tr>
                                                 <td>#</td>
-                                                @php
-                                                    $words = explode(' ', $reply->keywords);
+                                                <td>{{ $reply->platform }}</td>
+                                                {{-- @php
+                                                    $words = explode(' ', $reply->response);
                                                     $excerpt = implode(' ', array_slice($words, 0, 1));
-                                                @endphp
-                                                <td>{{ $excerpt }}</td>
+                                                @endphp --}}
+                                                <td>{{ $reply->link }}</td>
                                                 <td><button class="btn btn-sm dropdown-toggle more-horizontal"
                                                         type="button" data-toggle="dropdown" aria-haspopup="true"
                                                         aria-expanded="false">
                                                         <span class="text-muted sr-only">Action</span>
                                                     </button>
                                                     <div class="dropdown-menu dropdown-menu-right">
-                                                        <a class="dropdown-item" href="{{ route('spam.edit', $reply->id) }}">Edit</a>
+                                                        <a class="dropdown-item" href="{{ route('grouplinks.edit', $reply->id) }}">Edit</a>
                                                         <a class="dropdown-item"
-                                                            href="{{ route('spam.destroy', $reply->id) }}"
+                                                            href="{{ route('grouplinks.destroy', $reply->id) }}"
                                                             onclick="event.preventDefault();
                                                             document.getElementById('destroy').submit();"
                                                             >
-                                                            {{ __('Remove') }}
+                                                            {{ __(' Remove') }}
                                                         </a>
 
                                                         <form id="destroy"
-                                                            action="{{ route('spam.destroy', $reply->id) }}"
+                                                            action="{{ route('grouplinks.destroy', $reply->id) }}"
                                                             method="POST" class="d-none"
                                                             onsubmit="return confirm('Are you sure you want to delete this reply?');"
                                                         >
@@ -73,6 +75,3 @@
         </div> <!-- .row -->
     </div> <!-- .container-fluid -->
 @endsection
-
-
-

@@ -35,7 +35,7 @@
                                                 <td><img src="{{ asset('storage/app/public/posts/'.$post->image) }}" alt="" style="width: 50px;"></td>
                                                 @php
                                                     $words = explode(' ', $post->caption);
-                                                    $excerpt = implode(' ', array_slice($words, 0, 1));
+                                                    $excerpt = implode(' ', array_slice($words, 0, 3));
                                                 @endphp
                                                 <td>{{ $excerpt }}</td>
                                                 <td><button class="btn btn-sm dropdown-toggle more-horizontal"
@@ -44,10 +44,23 @@
                                                         <span class="text-muted sr-only">Action</span>
                                                     </button>
                                                     <div class="dropdown-menu dropdown-menu-right">
-                                                        <a class="dropdown-item" href="#">View</a>
                                                         <a class="dropdown-item" href="{{ route('posts.edit', $post->id) }}">Edit</a>
-                                                        <a class="dropdown-item" href="#">Remove</a>
-                                                        <a class="dropdown-item" href="#">Assign</a>
+                                                        <a class="dropdown-item"
+                                                            href="{{ route('posts.destroy', $post->id) }}"
+                                                            onclick="event.preventDefault();
+                                                            document.getElementById('destroy').submit();"
+                                                            >
+                                                            {{ __('Remove') }}
+                                                        </a>
+
+                                                        <form id="destroy"
+                                                            action="{{ route('posts.destroy', $post->id) }}"
+                                                            method="POST" class="d-none"
+                                                            onsubmit="return confirm('Are you sure you want to delete this post?');"
+                                                        >
+                                                        @csrf
+                                                        @method('DELETE')
+                                                        </form>
                                                     </div>
                                                 </td>
                                         @endforeach

@@ -50,10 +50,24 @@
                                                         <span class="text-muted sr-only">Action</span>
                                                     </button>
                                                     <div class="dropdown-menu dropdown-menu-right">
-                                                        <a class="dropdown-item" href="#">View</a>
-                                                        <a class="dropdown-item" href="{{ route('posts.edit', $reply->id) }}">Edit</a>
-                                                        <a class="dropdown-item" href="#">Remove</a>
-                                                        <a class="dropdown-item" href="#">Assign</a>
+                                                        <a class="dropdown-item"
+                                                            href="{{ route('groupreplies.edit', $reply->id) }}">Edit</a>
+                                                        <a class="dropdown-item"
+                                                            href="{{ route('groupreplies.destroy', $reply->id) }}"
+                                                            onclick="event.preventDefault();
+                                                            document.getElementById('destroy').submit();"
+                                                            >
+                                                            {{ __('Remove') }}
+                                                        </a>
+
+                                                        <form id="destroy"
+                                                            action="{{ route('groupreplies.destroy', $reply->id) }}"
+                                                            method="POST" class="d-none"
+                                                            onsubmit="return confirm('Are you sure you want to delete this reply?');"
+                                                        >
+                                                        @csrf
+                                                        @method('DELETE')
+                                                        </form>
                                                     </div>
                                                 </td>
                                         @endforeach

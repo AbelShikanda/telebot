@@ -50,10 +50,7 @@
                                                         <span class="text-muted sr-only">Action</span>
                                                     </button>
                                                     <div class="dropdown-menu dropdown-menu-right">
-                                                        <a class="dropdown-item" href="#">View</a>
-                                                        <a class="dropdown-item" href="{{ route('replies.edit', $message->id) }}">Edit</a>
-                                                        <a class="dropdown-item" href="#">Remove</a>
-                                                        <a class="dropdown-item" href="#">Assign</a>
+                                                        <a class="dropdown-item" href="{{ route('showTeleMessages', $message->id) }}">View</a>
                                                     </div>
                                                 </td>
                                         @endforeach

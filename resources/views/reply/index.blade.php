@@ -44,10 +44,23 @@
                                                         <span class="text-muted sr-only">Action</span>
                                                     </button>
                                                     <div class="dropdown-menu dropdown-menu-right">
-                                                        <a class="dropdown-item" href="#">View</a>
                                                         <a class="dropdown-item" href="{{ route('replies.edit', $reply->id) }}">Edit</a>
-                                                        <a class="dropdown-item" href="#">Remove</a>
-                                                        <a class="dropdown-item" href="#">Assign</a>
+                                                        <a class="dropdown-item"
+                                                            href="{{ route('replies.destroy', $reply->id) }}"
+                                                            onclick="event.preventDefault();
+                                                            document.getElementById('destroy').submit();"
+                                                            >
+                                                            {{ __(' Remove') }}
+                                                        </a>
+
+                                                        <form id="destroy"
+                                                            action="{{ route('replies.destroy', $reply->id) }}"
+                                                            method="POST" class="d-none"
+                                                            onsubmit="return confirm('Are you sure you want to delete this reply?');"
+                                                        >
+                                                        @csrf
+                                                        @method('DELETE')
+                                                        </form>
                                                     </div>
                                                 </td>
                                         @endforeach
