@@ -29,7 +29,7 @@ class TelegramController extends Controller
 
     public function setWebhook()
     {
-        $webhookUrl = url('https://www.print.printshopeld.com/webhook');
+        $webhookUrl = url('https://www.print.printshopeld.com');
         $response = $this->telegramService->setWebhook($webhookUrl);
 
         return response()->json($response);

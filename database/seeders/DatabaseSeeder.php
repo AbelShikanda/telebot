@@ -18,6 +18,7 @@ class DatabaseSeeder extends Seeder
             GroupRepliesSeeder::class,
             PrivateRepliesSeeder::class,
             SpamFilterSeeder::class,
+            GroupLinkSeeder::class,
         ]);
     }
 }
