@@ -91,9 +91,9 @@ jobs:
           DEST_ASSET_DIR: /home/printsh1/print.printshopeld.com/phptelebot/public/assets
           DEST_CSS_DIR: /home/printsh1/print.printshopeld.com/phptelebot/public/css
           DEST_JS_DIR: /home/printsh1/print.printshopeld.com/phptelebot/public/js
-          DEST_DATA_DIR: /home/printsh1/print.printshopeld.com/phptelebot/public/assets
-          DEST_DIST_DIR: /home/printsh1/print.printshopeld.com/phptelebot/public/css
-          DEST_FONTS_DIR: /home/printsh1/print.printshopeld.com/phptelebot/public/js
+          DEST_DATA_DIR: /home/printsh1/print.printshopeld.com/phptelebot/public/data
+          DEST_DIST_DIR: /home/printsh1/print.printshopeld.com/phptelebot/public/dist
+          DEST_FONTS_DIR: /home/printsh1/print.printshopeld.com/phptelebot/public/fonts
           DEST_PARENT_DIR: /home/printsh1/print.printshopeld.com/phptelebot/public
         with:
           host: ${{ secrets.SSH_SITES_IP }}
