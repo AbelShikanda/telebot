@@ -85,9 +85,15 @@ jobs:
           SOURCE_ASSET_DIR: /home/printsh1/print.printshopeld/release/${{github.sha}}/public/assets
           SOURCE_CSS_DIR: /home/printsh1/print.printshopeld/release/${{github.sha}}/public/css
           SOURCE_JS_DIR: /home/printsh1/print.printshopeld/release/${{github.sha}}/public/js
+          SOURCE_DATA_DIR: /home/printsh1/print.printshopeld/release/${{github.sha}}/public/data
+          SOURCE_DIST_DIR: /home/printsh1/print.printshopeld/release/${{github.sha}}/public/dist
+          SOURCE_FONTS_DIR: /home/printsh1/print.printshopeld/release/${{github.sha}}/public/fonts
           DEST_ASSET_DIR: /home/printsh1/print.printshopeld.com/phptelebot/public/assets
           DEST_CSS_DIR: /home/printsh1/print.printshopeld.com/phptelebot/public/css
           DEST_JS_DIR: /home/printsh1/print.printshopeld.com/phptelebot/public/js
+          DEST_DATA_DIR: /home/printsh1/print.printshopeld.com/phptelebot/public/assets
+          DEST_DIST_DIR: /home/printsh1/print.printshopeld.com/phptelebot/public/css
+          DEST_FONTS_DIR: /home/printsh1/print.printshopeld.com/phptelebot/public/js
           DEST_PARENT_DIR: /home/printsh1/print.printshopeld.com/phptelebot/public
         with:
           host: ${{ secrets.SSH_SITES_IP }}
@@ -163,6 +169,63 @@ jobs:
                 fi
             else
                 echo "js directory does not exist in the source."
+            fi
+            # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+            if [ -d "$SOURCE_DATA_DIR" ]; then
+                if [ -d "$DEST_DATA_DIR" ]; then
+                    rm -rf "$DEST_DATA_DIR"
+                    if [ $? -ne 0 ]; then
+                        echo "Failed to remove the destination DATA directory."
+                        exit 1
+                    fi
+                else
+                    echo "DATA directory does not exist in the destination."
+                fi
+                mv "$SOURCE_DATA_DIR" "$DEST_PARENT_DIR"
+                if [ $? -ne 0 ]; then
+                    echo "Failed to move the DATA directory from source to destination."
+                    exit 1
+                fi
+            else
+                echo "DATA directory does not exist in the source."
+            fi
+            # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+            if [ -d "$SOURCE_DIST_DIR" ]; then
+                if [ -d "$DEST_DIST_DIR" ]; then
+                    rm -rf "$DEST_DIST_DIR"
+                    if [ $? -ne 0 ]; then
+                        echo "Failed to remove the destination DIST directory."
+                        exit 1
+                    fi
+                else
+                    echo "DIST directory does not exist in the destination."
+                fi
+                mv "$SOURCE_DIST_DIR" "$DEST_PARENT_DIR"
+                if [ $? -ne 0 ]; then
+                    echo "Failed to move the DIST directory from source to destination."
+                    exit 1
+                fi
+            else
+                echo "DIST directory does not exist in the source."
+            fi
+            # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+            if [ -d "$SOURCE_FONTS_DIR" ]; then
+                if [ -d "$DEST_FONTS_DIR" ]; then
+                    rm -rf "$DEST_FONTS_DIR"
+                    if [ $? -ne 0 ]; then
+                        echo "Failed to remove the destination FONTS directory."
+                        exit 1
+                    fi
+                else
+                    echo "FONTS directory does not exist in the destination."
+                fi
+                mv "$SOURCE_FONTS_DIR" "$DEST_PARENT_DIR"
+                if [ $? -ne 0 ]; then
+                    echo "Failed to move the FONTS directory from source to destination."
+                    exit 1
+                fi
+            else
+                echo "FONTS directory does not exist in the source."
             fi
             # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
             mv -f "/home/printsh1/print.printshopeld/release/${GITHUB_SHA}/public/mix-manifest.json" "/home/printsh1/print.printshopeld.com/phptelebot/public"
