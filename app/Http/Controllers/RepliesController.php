@@ -15,7 +15,7 @@ class RepliesController extends Controller
      */
     public function index()
     {
-        $replies = Replies::all();
+        $replies = Replies::orderByDesc('id')->get();
         return view('reply.index', with([
             'replies' => $replies,
         ]));
@@ -46,18 +46,18 @@ class RepliesController extends Controller
             'reply' => 'required',
         ]);
         // dd($replies);
-        
+
         try {
             DB::beginTransaction();
             // Logic For Save User Data
-            
+
             $replies = Replies::create([
                 'keyword' => $request->keywords,
                 'response' => $request->reply,
             ]);
 
 
-            if(!$replies){
+            if (!$replies) {
                 DB::rollBack();
 
                 return back()->with('error', 'Something went wrong while saving user data');
@@ -65,8 +65,6 @@ class RepliesController extends Controller
 
             DB::commit();
             return redirect()->route('replies.index')->with('success', 'Values Stored Successfully.');
-
-
         } catch (\Throwable $th) {
             DB::rollBack();
             throw $th;
@@ -115,7 +113,7 @@ class RepliesController extends Controller
             'reply' => '',
         ]);
         // dd($replies);
-        
+
         try {
             DB::beginTransaction();
             // Logic For Save User Data
@@ -133,7 +131,7 @@ class RepliesController extends Controller
             }
 
 
-            if(!$replies){
+            if (!$replies) {
                 DB::rollBack();
 
                 return back()->with('error', 'Something went wrong while saving user data');
@@ -141,8 +139,6 @@ class RepliesController extends Controller
 
             DB::commit();
             return redirect()->route('replies.index')->with('success', 'Values Updated Successfully.');
-
-
         } catch (\Throwable $th) {
             DB::rollBack();
             throw $th;
@@ -155,8 +151,13 @@ class RepliesController extends Controller
      * @param  \App\Models\Replies  $replies
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Replies $replies)
+    public function destroy($id)
     {
-        //
+        // Attempt to delete the group reply
+        $replies = Replies::findOrFail($id);
+        $replies->delete();
+
+        // Redirect back with a success message
+        return redirect()->route('replies.index')->with('success', 'Reply deleted successfully.');
     }
 }

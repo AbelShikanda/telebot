@@ -25,7 +25,8 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         // $schedule->command('inspire')->hourly();
-        $schedule->command('telegram:post')->everyMinute();
+        $schedule->command('telegram:post')->cron('0 0,5-23 * * *');
+        $schedule->command('telegram:link')->cron('30 0,5-23 * * *');
     }
 
     /**

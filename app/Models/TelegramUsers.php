@@ -9,6 +9,8 @@ class TelegramUsers extends Model
 {
     use HasFactory;
 
+    protected $table = 'telegram_users';
+
     protected $fillable = [
         'user_id', 
         'username', 
@@ -22,6 +24,6 @@ class TelegramUsers extends Model
 
     public function messages()
     {
-        return $this->hasMany(TelegramMessages::class, 'user_id', 'user_id');
+        return $this->hasMany(TelegramMessages::class, 'user_id', 'id');
     }
 }

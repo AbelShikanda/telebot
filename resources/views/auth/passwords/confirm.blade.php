@@ -1,5 +1,10 @@
 @extends('layouts.app')
-
+@section('sidebar')
+    {{-- Leave this section empty to exclude the sidebar --}}
+@endsection
+@section('navbar')
+    {{-- Leave this section empty to exclude the sidebar --}}
+@endsection
 @section('content')
 <div class="container">
     <div class="row justify-content-center">

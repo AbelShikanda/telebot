@@ -8,5 +8,5 @@ use Illuminate\Database\Eloquent\Model;
 class GroupReplies extends Model
 {
     use HasFactory;
-    protected $fillable = ['keyword', 'response', 'default'];
+    protected $fillable = ['keyword', 'response', 'default_response'];
 }

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\GroupReplies;
+use Facade\FlareClient\Enums\GroupingTypes;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -15,8 +16,9 @@ class GroupRepliesController extends Controller
      */
     public function index()
     {
-        
-        $replies = GroupReplies::all();
+
+        $replies = GroupReplies::orderByDesc('id')->get();
+        // dd($replies);
         return view('groupReply.index', with([
             'replies' => $replies,
         ]));
@@ -48,11 +50,11 @@ class GroupRepliesController extends Controller
             'groupreply' => 'required',
         ]);
         // dd($replies);
-        
+
         try {
             DB::beginTransaction();
             // Logic For Save User Data
-            
+
             $replies = GroupReplies::create([
                 'keyword' => $request->keywords,
                 'response' => $request->reply,
@@ -60,7 +62,7 @@ class GroupRepliesController extends Controller
             ]);
 
 
-            if(!$replies){
+            if (!$replies) {
                 DB::rollBack();
 
                 return back()->with('error', 'Something went wrong while saving user data');
@@ -68,8 +70,6 @@ class GroupRepliesController extends Controller
 
             DB::commit();
             return redirect()->route('groupreplies.index')->with('success', 'Values Stored Successfully.');
-
-
         } catch (\Throwable $th) {
             DB::rollBack();
             throw $th;
@@ -117,7 +117,7 @@ class GroupRepliesController extends Controller
             'groupreply' => '',
         ]);
         // dd($replies);
-        
+
         try {
             DB::beginTransaction();
             // Logic For Save User Data
@@ -139,7 +139,7 @@ class GroupRepliesController extends Controller
             }
 
 
-            if(!$replies){
+            if (!$replies) {
                 DB::rollBack();
 
                 return back()->with('error', 'Something went wrong while saving user data');
@@ -147,8 +147,6 @@ class GroupRepliesController extends Controller
 
             DB::commit();
             return redirect()->route('groupreplies.index')->with('success', 'Values Updated Successfully.');
-
-
         } catch (\Throwable $th) {
             DB::rollBack();
             throw $th;
@@ -161,8 +159,13 @@ class GroupRepliesController extends Controller
      * @param  \App\Models\GroupReplies  $groupReplies
      * @return \Illuminate\Http\Response
      */
-    public function destroy(GroupReplies $groupReplies)
+    public function destroy($id)
     {
-        //
+        // / Attempt to delete the group reply
+        $groupReplies = GroupReplies::findOrFail($id);
+        $groupReplies->delete();
+        
+        // Redirect back with a success message
+        return redirect()->route('groupreplies.index')->with('success', 'Reply deleted successfully.');
     }
 }
