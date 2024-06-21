@@ -139,7 +139,6 @@ class PostsController extends Controller
         $file = $request->file('image');
         if (isset($file)) {
             $file = $request->file('image');
-            // dd($file);
             $currentDate = now()->toDateString();
             $fileName = $currentDate . '-' . uniqid() . '.' . $file->getClientOriginalExtension();
 
