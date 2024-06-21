@@ -31,6 +31,7 @@ class TelegramController extends Controller
     {
         $webhookUrl = url('https://www.print.printshopeld.com');
         $response = $this->telegramService->setWebhook($webhookUrl);
+        // curl -X POST "https://api.telegram.org/bot6496982679:AAELMYScxqkTvEFQaBjy5Ml1wULPF2lbYT8/setWebhook" -d "url=https://www.print.printshopeld.com/6496982679:AAELMYScxqkTvEFQaBjy5Ml1wULPF2lbYT8/webhook"
 
         return response()->json($response);
     }
